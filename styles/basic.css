@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+body {
+    background-color: black;
+}
+
+header {
+    padding:  3vh 18vw 0vh 18vw;
+    background-color: black;
+    min-height: 6vh;
+}
+
+.title {
+    font-family: "Kanit", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 6vh;
+    color: #27f695;
+    text-align: left;
+}
+
+.headerbtns {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 5vh;
+    display: inline-block;
+    padding:  5vh 18vw 0vh 0vw;
+}
+
+.headerimgs {
+    height: 5vh;
+    margin: 0 0.3vw 0 0.3vw;
+}
+
+.headertext {
+    font-family: "Kanit", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 2.5vh;
+    color: white;
+    padding-bottom: 1.25vh;
+    vertical-align: bottom;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    visibility: hidden;
+}
+
+.headerdiv {
+    display: inline;
+}
+
+
+#hi1:hover #ht1 {
+    visibility: visible;
+    height: auto;
+    width: auto;
+}
+
+#hi2:hover #ht2 {
+    visibility: visible;
+    height: auto;
+    width: auto;
+}
+
+#hi3:hover #ht3 {
+    visibility: visible;
+    height: auto;
+    width: auto;
+}
+
+.aimg {
+    text-decoration: none;
+}
+
+#lang-box {
+    text-align: center;
+    height: 0;
+    width: 0;
+    background-color:#27f695;
+    color: black;
+    display: block;
+    font-family: "Kanit", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 2.5vh;
+    padding: 2vh 2vh 2vh 2vh;
+    visibility: hidden;
+    border: hidden;
+    border-radius: 50px;
+    right: 18vw;
+    position: absolute;
+    z-index: 100;
+}
+
+.langimg {
+    height: 5vh;
+    width: auto;
+    display: inline;
+}
+
+#search {
+    padding:  0vh 18vw 0vh 18vw;
+    background-color: black;
+    max-height: 6vh;
+}
+
+.welcometext {
+    font-family: "Kanit", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 9vh;
+    color: white;
+    text-align: center;
+    padding-top: 7vh;
+}
