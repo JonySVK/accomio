@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 body {
     background-color: black;
@@ -42,32 +43,10 @@ header {
     padding-bottom: 1.25vh;
     vertical-align: bottom;
     display: inline-block;
-    width: 0;
-    height: 0;
-    visibility: hidden;
 }
 
 .headerdiv {
     display: inline;
-}
-
-
-#hi1:hover #ht1 {
-    visibility: visible;
-    height: auto;
-    width: auto;
-}
-
-#hi2:hover #ht2 {
-    visibility: visible;
-    height: auto;
-    width: auto;
-}
-
-#hi3:hover #ht3 {
-    visibility: visible;
-    height: auto;
-    width: auto;
 }
 
 .aimg {
@@ -100,18 +79,97 @@ header {
     display: inline;
 }
 
+#login-box {
+    text-align: center;
+    height: 0;
+    width: 0;
+    background-color:#27f695;
+    color: black;
+    display: block;
+    font-family: "Kanit", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 2.5vh;
+    padding: 2vh 2vh 2vh 2vh;
+    visibility: hidden;
+    border: hidden;
+    border-radius: 50px;
+    right: 18vw;
+    position: absolute;
+    z-index: 100;
+}
+
+#login-box input[type=text], input[type=password] {
+    background-color: white;
+    color: black;
+    border: 1px solid #27f695;
+    padding: 5px;
+    margin: 5px;
+}
+
+#login-box input[type=text]:focus, input[type=password]:focus {
+    border: 1px solid black;
+}
+
+#login-box input[type=submit] {
+    background-color: white;
+    color: black;
+    border: none;
+    padding: 7px;
+    margin: 5px;
+}
+
+#login-box input[type=submit]:hover {
+    background-color: black;
+    color: white;
+}
+
 #search {
     padding:  0vh 18vw 0vh 18vw;
     background-color: black;
-    max-height: 6vh;
 }
 
 .welcometext {
     font-family: "Kanit", sans-serif;
     font-weight: 400;
     font-style: normal;
-    font-size: 9vh;
+    font-size: 7vh;
     color: white;
     text-align: center;
-    padding-top: 7vh;
+    padding-top: 18vh;
+}
+
+#searchform {
+    margin-top: 3vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.formdiv {
+    display: inline-block;
+    margin: 2px;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.searchinput {
+    background-color: white;
+    color: black;
+    border: none;
+    padding: 15px;
+    margin: 2px;
+    height: 1vh;
+}
+
+#searchform input[type=image] {
+    padding: 2px;
+    margin: 10px;
+    height: 5vh;
+}
+
+#searchform input[type=image]:hover {
+    background-color: white;
+    border-radius: 50%;
 }
