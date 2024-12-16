@@ -2,6 +2,7 @@
 <!--
 to-dos:
 - langs
+- cities in placelist
 -->
 <html>
     <head>
@@ -47,13 +48,13 @@ to-dos:
         </header>
         <div id="search" style="color:white;">
             <div class="welcometext">Kam to dnes bude?</div>
-            <form id="searchform">
+            <form id="searchform" method="get">
                 <div id="placediv" class="formdiv">
                 <label for="place">Kam cestujete?</label><br>
-                <input list="placelist" class="searchinput" id="place" name="place" required>
+                <input list="placelist" class="searchinput" id="place" name="place" placeholder=""  required>
                     <datalist id="placelist">
                         <div id="placelistdiv" class="formdiv">
-                            <!-- delete after install php -->    
+                            <!-- delete after install php  -->    
                             <option value="Bratislava">
                             <option value="Viedeň">
                             <option value="Budapešť">
