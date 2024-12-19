@@ -2,7 +2,6 @@
 <!--
 to-dos:
 - langs
-- cities in placelist
 -->
 <html lang="sk"> <!-- after translation edit -->
     <head>
@@ -14,7 +13,7 @@ to-dos:
     </head>
     <body>
         <header>
-            <div class="title">accomio</div>
+        <div class="title" onclick="window.location.href ='/accomio'">accomio</div>
             <nav class="headerbtns">
                 <a onclick="langbox()" class="aimg"><div class="headerdiv" id="hi1">
                     <abbr class="headertext" id="ht1" title="Zmeniť jazyk"><img src="styles/icons/language.svg" class="headerimgs"></abbr>
@@ -47,49 +46,8 @@ to-dos:
                 <span class="langtext">Nemáte ešte účet? <a href="login">Zaregistrujte sa</a></span>
             </div>
         </header>
-        <div id="search" style="color:white;">
-            <div class="welcometext">Kam to dnes bude?</div>
-            <form id="searchform" method="get">
-                <div id="placediv" class="formdiv">
-                <label for="place">Kam cestujete?</label><br>
-                <input list="placelist" class="searchinput" id="place" name="place" placeholder=""  required>
-                    <datalist id="placelist">
-                        <div id="placelistdiv" class="formdiv">
-                            <!-- delete after connect database and edit  -->    
-                            <option value="Bratislava">
-                            <option value="Viedeň">
-                            <option value="Budapešť">
-                            <option value="Berlín">
-                            <option value="Londýn">
-                            <!-- end -->
-                        </div>
-                    </datalist>
-                </div>
-                <div id="datefromdiv" class="formdiv">
-                    <label for="datefrom">Príchod</label><br>
-                    <input type="date" class="searchinput" id="datefrom" name="datefrom" oninput="dateto.min = this.value" min="<?php echo date("Y-m-d"); ?>" required>
-                </div>
-                <div id="datetodiv" class="formdiv">
-                    <label for="dateto">Odchod</label><br>
-                    <input type="date" class="searchinput" id="dateto" name="dateto" oninput="datefrom.max = this.value" min="<?php echo date("Y-m-d"); ?>" required>
-                </div>
-                <div id="adultsdiv" class="formdiv">
-                    <label for="adults">Počet dospelých</label><br>
-                    <input type="number" class="searchinput" id="adults" name="adults" value="1" min="1" max="20" style="width: 6.5vw; text-align: center;" required>
-                </div>
-                <div id="kidsdiv" class="formdiv">
-                    <label for="kids">Počet detí</label><br>
-                    <input type="number" class="searchinput" id="kids" name="kids" value="0" min="0" max="10" style="width: 6.5vw; text-align: center;" required>
-                </div>
-                <div id="submitdiv" class="formdiv">
-                    <label></label><br>
-                    <input type="image" src="styles/icons/search_white.svg" id="submitimage" onmouseover="document.querySelector('#submitimage').src='styles/icons/search_black.svg'" onmouseout="document.querySelector('#submitimage').src='styles/icons/search_white.svg'">
-                </div>
-            </form>
-        </div>
-        <div id="promoted">
-            <!-- create after connect database -->
-        </div>
+        <div class="welcometext">Po ceste ste sa asi stratili...</div>
+        <div style="color:white;text-align:center;font-family: 'Roboto', sans-serif; font-weight: 400; font-style: normal; font-size: 3vh; padding-top: 2vh;">Stránka, ktorú hľadáte, neexistuje. Skúste skontrolovať URL adresu.<br><br>ERROR 404</div>
         <div id="footer">
             <div class="footer-c1">
                 <div class="title" style="font-size: 4vh;">accomio</div>

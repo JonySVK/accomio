@@ -22,21 +22,23 @@ function loginbox() {
     }
 }
 
-var placeholder = ""
-var cities = ["Bratislava", "Viedeň", "Berlín", "Londýn"] // update after connect database
-var currentCityIndex = 0
-var charIndex = 0
-var isDeleting = false
+if (window.location.pathname === "/" || window.location.pathname === "/index.php" || window.location.pathname === "/search.php") {
+    var placeholder = ""
+    var cities = ["Bratislava", "Viedeň", "Berlín", "Londýn"] // update after connect database
+    var currentCityIndex = 0
+    var charIndex = 0
+    var isDeleting = false
 
-setInterval(function () {
-    const currentCity = cities[currentCityIndex];
+    setInterval(function () {
+        const currentCity = cities[currentCityIndex];
 
-    placeholder = currentCity.slice(0, charIndex++);
-    if (charIndex - 1 > currentCity.length) {
-        placeholder = ""
-        currentCityIndex = (currentCityIndex + 1) % cities.length
-        charIndex = 0
-    }
+        placeholder = currentCity.slice(0, charIndex++);
+        if (charIndex - 1 > currentCity.length) {
+            placeholder = ""
+            currentCityIndex = (currentCityIndex + 1) % cities.length
+            charIndex = 0
+        }
 
-    document.querySelector('#place').placeholder = placeholder
-}, 5);
+        document.querySelector('#place').placeholder = placeholder
+    }, 500);
+}
