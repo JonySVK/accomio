@@ -21,10 +21,10 @@
 #login-page-form input[type=email], input[type=password] {
     background-color: white;
     color: black;
-    border: 1px solid #27f695;
     padding: 5px;
     margin: 2vh 1vw 2vh 1vw;
-    font-size: 2.5vh
+    font-size: 2.5vh;
+    border: 1px solid black;
 }
 
 #login-page-form input[type=email]:focus, input[type=password]:focus {

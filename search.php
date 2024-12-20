@@ -2,6 +2,7 @@
 <!--
 to-dos:
 - langs
+- cities in placelist
 -->
 <html lang="sk"> <!-- after translation edit -->
     <head>
@@ -9,11 +10,10 @@ to-dos:
         <title>accomio | Hotely, penzióny a omnoho viac</title>
         <link rel="icon" type="image/x-icon" href="styles/icons/icon.ico">
         <link rel='stylesheet' href='styles/basic.css'>
-        <link rel='stylesheet' href='styles/login.css'>
         <script src='scripts/basic.js'></script>
     </head>
     <body>
-    <header>
+        <header>
             <div class="title" onclick="window.location.href ='/accomio'">accomio</div>
             <nav class="headerbtns">
                 <a onclick="langbox()" class="aimg"><div class="headerdiv" id="hi1">
@@ -35,14 +35,46 @@ to-dos:
                 <abbr title="Česky"><img src="styles/languages/czech.svg" id="lang-cz" class="langimg"></abbr>
             </div>
         </header>
-        <div class="welcometext">Prihláste sa alebo si vytvorte nový účet</div>
-        <div id="login-page">
-            <form id="login-page-form" method="post" action="db-login.php">
-                <label for="email">Zadajte svoj email</label><br>
-                <input type="email" id="email" name="email" class="loginfield"><br>
-                <input type="submit" value="Pokračovať">
+        <div id="search" style="color:white;">
+            <form id="searchform" method="get" action="search.php">
+                <div id="placediv" class="formdiv">
+                <label for="place">Kam cestujete?</label><br>
+                <input list="placelist" class="searchinput" id="place" name="place" placeholder=""  required>
+                    <datalist id="placelist">
+                        <div id="placelistdiv" class="formdiv">
+                            <!-- delete after connect database and edit  -->    
+                            <option value="Bratislava">
+                            <option value="Viedeň">
+                            <option value="Budapešť">
+                            <option value="Berlín">
+                            <option value="Londýn">
+                            <!-- end -->
+                        </div>
+                    </datalist>
+                </div>
+                <div id="datefromdiv" class="formdiv">
+                    <label for="datefrom">Príchod</label><br>
+                    <input type="date" class="searchinput" id="datefrom" name="datefrom" oninput="dateto.min = this.value" min="<?php echo date("Y-m-d"); ?>" required>
+                </div>
+                <div id="datetodiv" class="formdiv">
+                    <label for="dateto">Odchod</label><br>
+                    <input type="date" class="searchinput" id="dateto" name="dateto" oninput="datefrom.max = this.value" min="<?php echo date("Y-m-d"); ?>" required>
+                </div>
+                <div id="adultsdiv" class="formdiv">
+                    <label for="adults">Počet dospelých</label><br>
+                    <input type="number" class="searchinput" id="adults" name="adults" value="1" min="1" max="20" style="width: 6.5vw; text-align: center;" required>
+                </div>
+                <div id="kidsdiv" class="formdiv">
+                    <label for="kids">Počet detí</label><br>
+                    <input type="number" class="searchinput" id="kids" name="kids" value="0" min="0" max="10" style="width: 6.5vw; text-align: center;" required>
+                </div>
+                <div id="submitdiv" class="formdiv">
+                    <label></label><br>
+                    <input type="image" src="styles/icons/search_white.svg" id="submitimage" onmouseover="document.querySelector('#submitimage').src='styles/icons/search_black.svg'" onmouseout="document.querySelector('#submitimage').src='styles/icons/search_white.svg'">
+                </div>
             </form>
         </div>
+        <div id="hotelslist"></div>
         <div id="footer">
             <div class="footer-c1">
                 <div class="title" style="font-size: 4vh;">accomio</div>

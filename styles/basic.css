@@ -174,7 +174,83 @@ header {
     border-radius: 50%;
 }
 
-/**/
+#hotelslist {
+    margin-top: 10vh;
+    color: white;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.hotellist-c1 {
+    width: 18vw;
+    margin-left: 18vw;
+    border-radius: 2%;
+    padding: 1vw;
+    display: inline-block;
+    margin-bottom: 1vw;
+    column-count: 2;
+}
+
+.hotellist-c2 {
+    width: 18vw;
+    margin-left: 1vw;
+    border-radius: 2%;
+    padding: 1vw;
+    display: inline-block;
+    margin-bottom: 1vw;
+    column-count: 2;
+}
+
+.hotellist-c3 {
+    width: 18vw;
+    margin-left: 1vw;
+    border-radius: 2%;
+    padding: 1vw;
+    display: inline-block;
+    margin-bottom: 1vw;
+    column-count: 2;
+}
+
+.hotellist-img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    column-span: all;
+    display: block;
+}
+
+.hotellist-name {
+    font-weight: 900;
+    font-size: large;
+    margin-top: 1vh;
+    display: block;
+    text-align: left;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+.hotellist-location {
+    font-weight: 500;
+    text-align: left;
+    display: block;
+}
+
+.hotellist-price {
+    font-weight: 700;
+    text-align: right;
+    display: block;
+    align-items: right;
+    padding-top: 1vh;
+    
+}
+
+.hotellist-rating {
+    font-weight: 300;
+    text-align: right;
+    display: block;
+    align-items: right;
+}
 
 #footer {
     color: white;
@@ -182,7 +258,8 @@ header {
     font-weight: 400;
     font-style: normal;
     line-height: 1.9;
-    padding-top: 17vh;
+    margin-top: 15vh;
+    margin-bottom: 10vh;
 }
 
 #footer a {
@@ -192,10 +269,9 @@ header {
 
 .footer-c1 {
     line-height: 1.5;
-    position: absolute;
-    left: 18vw;
-    max-width: 12vw;
-    padding-top: 3vh;
+    width: 12vw;
+    margin-left: 18vw;
+    display: inline-block;
 }
 
 .copyright {
@@ -203,15 +279,13 @@ header {
 }
 
 .footer-c2 {
-    position: absolute;
-    left: 60vw;
-    max-width: 10vw;
-    padding-top: 3vh;
+    width: 10vw;
+    margin-left: 27vw;
+    display: inline-block;
 }
 
 .footer-c3 {
-    position: absolute;
-    left: 75vw;
-    max-width: 10vw;
-    padding-top: 3vh;
+    width: 10vw;
+    margin-left: 5vw;
+    display: inline-block;
 }
