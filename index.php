@@ -4,6 +4,50 @@ to-dos:
 - langs
 - cities in placelist
 -->
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "accomio_hotels";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+$sql = "SELECT * FROM basic_info";
+$selected = $conn->query($sql);
+$listnum = 0;
+$htlslst = '';
+while($result = $selected->fetch_assoc()) {
+    if ($listnum != 3) {
+        $listnum += 1;
+    } else {
+        $listnum = 1;
+    }
+    $htlslst = $htlslst . '{
+        name: "' . $result['name'] . '",
+        location: "' . $result['location'] . '",
+        price: ' . $result['price'] . ',
+        rating: ' . $result['rating'] . ',
+        img: "' . $result['img'] . '",
+        list_num:' . $listnum . ',
+        url: "' . $result['url'] . '"
+    },';
+    };
+echo '<script>
+            document.addEventListener("DOMContentLoaded", () => {
+            var htlslst = document.querySelector("#hotelslist")
+            if (htlslst) {
+                var hotels = [' . $htlslst . ']
+                hotels.forEach(hotel => {
+                    var hotelDiv = document.createElement("div")
+                    hotelDiv.className = `hotellist-c${hotel.list_num}`
+                    hotelDiv.onclick = function () {document.location.href = `${hotel.url}`}
+                    hotelDiv.innerHTML = `<img src="${hotel.img}" class="hotellist-img"><span class="hotellist-name">${hotel.name}</span><span class="hotellist-location">${hotel.location}</span><span class="hotellist-price">${hotel.price}€</span><span class="hotellist-rating">${hotel.rating}★</span>`
+                    htlslst.appendChild(hotelDiv)
+                })
+            } 
+            })
+        </script>';
+?>
 <html lang="sk"> <!-- after translation edit -->
     <head>
         <meta charset="UTF-8">

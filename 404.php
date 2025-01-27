@@ -22,9 +22,8 @@ to-dos:
                 <a href="help" class="aimg"><div class="headerdiv" id="hi2">
                     <abbr class="headertext" id="ht2" title="Zákaznícka podpora"><img src="styles/icons/help.svg" class="headerimgs"></abbr>
                 </div></a>
-                <a onclick="loginbox()" class="aimg"><div class="headerdiv" id="hi3">
-                    <abbr class="headertext" id="ht3" title="Prihlásiť sa/Registrovať sa"><img src="styles/icons/account.svg" class="headerimgs"></abbr>
-                    <div id="loginstyle" style="display:inline;"></div>
+                <a href="login" class="aimg"><div class="headerdiv" id="hi2">
+                    <abbr class="headertext" id="ht2" title="Prihláste sa/Registrujte sa"><img src="styles/icons/account.svg" class="headerimgs"></abbr>
                 </div></a>
             </nav>
             <div id="lang-box">
@@ -33,17 +32,6 @@ to-dos:
                 <abbr title="Deutsch"><img src="styles/languages/german.svg" id="lang-de" class="langimg"></abbr>
                 <abbr title="Slovensky"><img src="styles/languages/slovak.svg" id="lang-sk" class="langimg"></abbr>
                 <abbr title="Česky"><img src="styles/languages/czech.svg" id="lang-cz" class="langimg"></abbr>
-            </div>
-            <div id="login-box">
-                <span class="langtext">Prihláste sa:</span><br>
-                <form id="login" method="post" action="db-login.php">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email"><br>
-                    <label for="password">Heslo:</label>
-                    <input type="password" id="password" name="password"><br>
-                    <input type="submit" value="Prihlásiť sa">
-                </form><br>
-                <span class="langtext">Nemáte ešte účet? <a href="login">Zaregistrujte sa</a></span>
             </div>
         </header>
         <div class="welcometext">Po ceste ste sa asi stratili...</div>

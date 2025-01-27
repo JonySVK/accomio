@@ -1,9 +1,98 @@
 <!DOCTYPE html>
-<!--
-to-dos:
-- langs
-- cities in placelist
--->
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "accomio_hotels";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+
+if (isset($_GET["place"])) {
+    $sql = "SELECT * FROM basic_info WHERE location= '" . $_GET["place"] . "'";
+    $selected = $conn->query($sql);
+    $count = $selected->num_rows;
+    if ($count == 0) {
+        echo '<script>
+                document.addEventListener("DOMContentLoaded", () => {
+                var htlslst = document.querySelector("#hotelslist")
+                htlslst.innerHTML = "Nič sa nenašlo"
+                })</script>';
+    } else {
+        $listnum = 0;
+        $htlslst = '';
+        while($result = $selected->fetch_assoc()) {
+                if ($listnum != 3) {
+                    $listnum += 1;
+                } else {
+                    $listnum = 1;
+                }
+                $htlslst = $htlslst . '{
+                                name: "' . $result['name'] . '",
+                                location: "' . $result['location'] . '",
+                                price: ' . $result['price'] . ',
+                                rating: ' . $result['rating'] . ',
+                                img: "' . $result['img'] . '",
+                                list_num:' . $listnum . ',
+                                url: "' . $result['url'] . '"
+                            },';
+        };
+            echo '<script>
+                    document.addEventListener("DOMContentLoaded", () => {
+                    var htlslst = document.querySelector("#hotelslist")
+                    if (htlslst) {
+                        var hotels = [' . $htlslst . ']
+                        hotels.forEach(hotel => {
+                            var hotelDiv = document.createElement("div")
+                            hotelDiv.className = `hotellist-c${hotel.list_num}`
+                            hotelDiv.onclick = function () {document.location.href = `${hotel.url}`}
+                            hotelDiv.innerHTML = `<img src="${hotel.img}" class="hotellist-img"><span class="hotellist-name">${hotel.name}</span><span class="hotellist-location">${hotel.location}</span><span class="hotellist-price">${hotel.price}€</span><span class="hotellist-rating">${hotel.rating}★</span>`
+                            htlslst.appendChild(hotelDiv)
+                        })
+                    } 
+                    })
+                </script>';
+        $conn->close();
+    };    
+} else {
+    $sql = "SELECT * FROM basic_info";
+    $selected = $conn->query($sql);
+    $listnum = 0;
+    $htlslst = '';
+    while($result = $selected->fetch_assoc()) {
+            if ($listnum != 3) {
+                $listnum += 1;
+            } else {
+                $listnum = 1;
+            }
+            $htlslst = $htlslst . '{
+                            name: "' . $result['name'] . '",
+                            location: "' . $result['location'] . '",
+                            price: ' . $result['price'] . ',
+                            rating: ' . $result['rating'] . ',
+                            img: "' . $result['img'] . '",
+                            list_num:' . $listnum . ',
+                            url: "' . $result['url'] . '"
+                        },';
+    };
+        echo '<script>
+                document.addEventListener("DOMContentLoaded", () => {
+                var htlslst = document.querySelector("#hotelslist")
+                if (htlslst) {
+                    var hotels = [' . $htlslst . ']
+                    hotels.forEach(hotel => {
+                        var hotelDiv = document.createElement("div")
+                        hotelDiv.className = `hotellist-c${hotel.list_num}`
+                        hotelDiv.onclick = function () {document.location.href = `${hotel.url}`}
+                        hotelDiv.innerHTML = `<img src="${hotel.img}" class="hotellist-img"><span class="hotellist-name">${hotel.name}</span><span class="hotellist-location">${hotel.location}</span><span class="hotellist-price">${hotel.price}€</span><span class="hotellist-rating">${hotel.rating}★</span>`
+                        htlslst.appendChild(hotelDiv)
+                    })
+                } 
+                })
+            </script>';
+    $conn->close();
+};
+?>
 <html lang="sk"> <!-- after translation edit -->
     <head>
         <meta charset="UTF-8">
@@ -39,7 +128,7 @@ to-dos:
             <form id="searchform" method="get" action="search.php">
                 <div id="placediv" class="formdiv">
                 <label for="place">Kam cestujete?</label><br>
-                <input list="placelist" class="searchinput" id="place" name="place" placeholder=""  required>
+                <input list="placelist" class="searchinput" id="place" name="place" value="<?php if (isset($_GET["place"])) {echo $_GET["place"];};?>" placeholder="" required>
                     <datalist id="placelist">
                         <div id="placelistdiv" class="formdiv">
                             <!-- delete after connect database and edit  -->    
