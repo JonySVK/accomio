@@ -152,6 +152,8 @@ header {
     font-family: "Roboto", sans-serif;
     font-weight: 400;
     font-style: normal;
+    white-space: nowrap;
+    overflow: visible;
 }
 
 .searchinput {
@@ -161,6 +163,7 @@ header {
     padding: 15px;
     margin: 2px;
     height: 1vh;
+    
 }
 
 #searchform input[type=image] {
@@ -234,6 +237,8 @@ header {
     font-weight: 500;
     text-align: left;
     display: block;
+    white-space: nowrap;
+    overflow: visible;
 }
 
 .hotellist-price {
@@ -242,6 +247,8 @@ header {
     display: block;
     align-items: right;
     padding-top: 1vh;
+    white-space: nowrap;
+    overflow: visible;
     
 }
 
@@ -250,6 +257,17 @@ header {
     text-align: right;
     display: block;
     align-items: right;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+.nothing {
+    margin-top: 5vh;
+    color: white;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    text-align: center;
 }
 
 #footer {
@@ -260,6 +278,8 @@ header {
     line-height: 1.9;
     margin-top: 15vh;
     margin-bottom: 10vh;
+    white-space: nowrap;
+    overflow: visible;
 }
 
 #footer a {

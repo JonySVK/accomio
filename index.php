@@ -8,11 +8,11 @@ to-dos:
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "accomio_hotels";
+$dbname = "accomio";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-$sql = "SELECT * FROM basic_info";
+$sql = "SELECT * FROM hotels_info";
 $selected = $conn->query($sql);
 $listnum = 0;
 $htlslst = '';
@@ -47,6 +47,8 @@ echo '<script>
             } 
             })
         </script>';
+
+$conn->close();
 ?>
 <html lang="sk"> <!-- after translation edit -->
     <head>

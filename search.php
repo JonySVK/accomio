@@ -3,22 +3,142 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "accomio_hotels";
+$dbname = "accomio";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
+    function nothing() {
+        echo "<script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    var htlslst = document.querySelector('#hotelslist');
+                    htlslst.innerHTML = `<div class='nothing'>Nič sa nenašlo</div>`;
+                });
+              </script>";
+    };
 
-if (isset($_GET["place"])) {
-    $sql = "SELECT * FROM basic_info WHERE location= '" . $_GET["place"] . "'";
-    $selected = $conn->query($sql);
-    $count = $selected->num_rows;
-    if ($count == 0) {
-        echo '<script>
-                document.addEventListener("DOMContentLoaded", () => {
-                var htlslst = document.querySelector("#hotelslist")
-                htlslst.innerHTML = "Nič sa nenašlo"
-                })</script>';
+    if (isset($_GET["place"])) {
+        $place = (string)$_GET["place"];
+        $people = ((int)$_GET["adults"]) + ((int)$_GET["kids"]);
+        
+        // places
+        $sql_hotels = "SELECT * FROM hotels_info WHERE location = '" . $place . "'";
+        $s_hotels = $conn->query($sql_hotels);
+
+        if ($s_hotels->num_rows == 0) {
+            echo "<script> console.log('1') </script>";
+            nothing();
+        } else {
+        $hotel_id = [];
+        while ($a = $s_hotels->fetch_assoc()) {
+            $hotel_id[] = $a['hotels_id'];
+        };
+
+        // capacity
+        $result_hotels = implode(", ", $hotel_id);
+        $sql = "SELECT * FROM hotels_rooms WHERE room_capacity >= $people AND hotels_id IN ($result_hotels)";
+        $s_rooms = $conn->query($sql);
+
+        if ($s_rooms->num_rows == 0) {
+            echo "<script> console.log('2') </script>";
+            nothing();
+        } else {
+        $all_rooms = [];
+        while ($c = $s_rooms->fetch_assoc()) {
+            $all_rooms[] = $c['rooms_id'];
+        }
+        
+        // occupied rooms
+        $occupied_rooms = [];
+        foreach ($all_rooms as $room_id) {
+            $sql = "SELECT * FROM bookings WHERE rooms_id = $room_id";
+            $s_bookings = $conn->query($sql);
+
+            $start = new DateTime($_GET['datefrom']);
+            $end = new DateTime($_GET['dateto']);
+            $interval = new DateInterval('P1D');
+            $alldates = new DatePeriod($start, $interval, $end);
+
+            $dates = [];
+            foreach ($alldates as $date) {
+                $dates[] = $date->format('Y-m-d');
+            }
+    
+            while ($c = $s_bookings->fetch_assoc()) {
+                $date_from_db = strtotime($c['date_from']);
+                $date_to_db = strtotime($c['date_to']);
+    
+                foreach ($dates as $date) {
+                    if (strtotime($date) >= $date_from_db && strtotime($date) <= $date_to_db) {
+                        $occupied_rooms[] = $room_id;
+                        break;
+                    }
+                }
+            }
+        }
+
+        $rooms = array_diff($all_rooms, $occupied_rooms);
+    
+        if (empty($rooms)) {
+            echo "<script> console.log('3') </script>";
+            nothing();
+        } else {
+        $hotels = [];   
+        foreach ($rooms as $rooms_id) {
+            $sql = "SELECT * FROM hotels_info WHERE hotels_id = (SELECT hotels_id FROM hotels_rooms WHERE rooms_id = $rooms_id)";
+            $s_hotels = $conn->query($sql);
+            $hotel = $s_hotels->fetch_assoc()['hotels_id'];
+        if (in_array($hotel, $hotels)) {
+                continue;
+            } else {
+                $hotels[] = $hotel;
+            };
+        };
+
+        $hotels_string = implode(", ", $hotels);
+        $sql = "SELECT * FROM hotels_info WHERE hotels_id IN ($hotels_string)";
+        $s_htls = $conn->query($sql);
+
+        $listnum = 0;
+        $htlslst = '';
+        while($result = $s_htls->fetch_assoc()) { 
+                        if ($listnum != 3) {
+                            $listnum += 1;
+                        } else {
+                            $listnum = 1;
+                        }
+                        $htlslst = $htlslst . '{
+                                        name: "' . $result['name'] . '",
+                                        location: "' . $result['location'] . '",
+                                        price: ' . $result['price'] /* edit */ . ', 
+                                        rating: ' . $result['rating'] . ',
+                                        img: "' . $result['img'] . '",
+                                        list_num:' . $listnum . ',
+                                        url: "' . $result['url'] . '"
+                                    },';
+                };
+                    echo '<script>
+                            document.addEventListener("DOMContentLoaded", () => {
+                            var htlslst = document.querySelector("#hotelslist")
+                            if (htlslst) {
+                                var hotels = [' . $htlslst . ']
+                                hotels.forEach(hotel => {
+                                    var hotelDiv = document.createElement("div")
+                                    hotelDiv.className = `hotellist-c${hotel.list_num}`
+                                    hotelDiv.onclick = function () {document.location.href = `${hotel.url}`}
+                                    hotelDiv.innerHTML = `<img src="${hotel.img}" class="hotellist-img"><span class="hotellist-name">${hotel.name}</span><span class="hotellist-location">${hotel.location}</span><span class="hotellist-price">${hotel.price}€</span><span class="hotellist-rating">${hotel.rating}★</span>`
+                                    htlslst.appendChild(hotelDiv)
+                                })
+                            } 
+                            })
+                        </script>';
+                    
+                    //$conn->close();
+                };
+            };
+        };
     } else {
+        $sql = "SELECT * FROM hotels_info";
+        $selected = $conn->query($sql);
         $listnum = 0;
         $htlslst = '';
         while($result = $selected->fetch_assoc()) {
@@ -52,46 +172,8 @@ if (isset($_GET["place"])) {
                     } 
                     })
                 </script>';
-        $conn->close();
-    };    
-} else {
-    $sql = "SELECT * FROM basic_info";
-    $selected = $conn->query($sql);
-    $listnum = 0;
-    $htlslst = '';
-    while($result = $selected->fetch_assoc()) {
-            if ($listnum != 3) {
-                $listnum += 1;
-            } else {
-                $listnum = 1;
-            }
-            $htlslst = $htlslst . '{
-                            name: "' . $result['name'] . '",
-                            location: "' . $result['location'] . '",
-                            price: ' . $result['price'] . ',
-                            rating: ' . $result['rating'] . ',
-                            img: "' . $result['img'] . '",
-                            list_num:' . $listnum . ',
-                            url: "' . $result['url'] . '"
-                        },';
     };
-        echo '<script>
-                document.addEventListener("DOMContentLoaded", () => {
-                var htlslst = document.querySelector("#hotelslist")
-                if (htlslst) {
-                    var hotels = [' . $htlslst . ']
-                    hotels.forEach(hotel => {
-                        var hotelDiv = document.createElement("div")
-                        hotelDiv.className = `hotellist-c${hotel.list_num}`
-                        hotelDiv.onclick = function () {document.location.href = `${hotel.url}`}
-                        hotelDiv.innerHTML = `<img src="${hotel.img}" class="hotellist-img"><span class="hotellist-name">${hotel.name}</span><span class="hotellist-location">${hotel.location}</span><span class="hotellist-price">${hotel.price}€</span><span class="hotellist-rating">${hotel.rating}★</span>`
-                        htlslst.appendChild(hotelDiv)
-                    })
-                } 
-                })
-            </script>';
     $conn->close();
-};
 ?>
 <html lang="sk"> <!-- after translation edit -->
     <head>
@@ -143,19 +225,19 @@ if (isset($_GET["place"])) {
                 </div>
                 <div id="datefromdiv" class="formdiv">
                     <label for="datefrom">Príchod</label><br>
-                    <input type="date" class="searchinput" id="datefrom" name="datefrom" oninput="dateto.min = this.value" min="<?php echo date("Y-m-d"); ?>" required>
+                    <input type="date" class="searchinput" id="datefrom" name="datefrom" oninput="dateto.min = this.value" min="<?php echo date("Y-m-d"); ?>" value="<?php if (isset($_GET["datefrom"])) {echo $_GET["datefrom"];};?>" required>
                 </div>
                 <div id="datetodiv" class="formdiv">
                     <label for="dateto">Odchod</label><br>
-                    <input type="date" class="searchinput" id="dateto" name="dateto" oninput="datefrom.max = this.value" min="<?php echo date("Y-m-d"); ?>" required>
+                    <input type="date" class="searchinput" id="dateto" name="dateto" oninput="datefrom.max = this.value" min="<?php echo date("Y-m-d"); ?>" value="<?php if (isset($_GET["dateto"])) {echo $_GET["dateto"];};?>"required>
                 </div>
                 <div id="adultsdiv" class="formdiv">
                     <label for="adults">Počet dospelých</label><br>
-                    <input type="number" class="searchinput" id="adults" name="adults" value="1" min="1" max="20" style="width: 6.5vw; text-align: center;" required>
+                    <input type="number" class="searchinput" id="adults" name="adults" value="1" min="1" max="20" style="width: 6.5vw; text-align: center;" value="<?php if (isset($_GET["adults"])) {echo $_GET["adults"];};?>"required>
                 </div>
                 <div id="kidsdiv" class="formdiv">
                     <label for="kids">Počet detí</label><br>
-                    <input type="number" class="searchinput" id="kids" name="kids" value="0" min="0" max="10" style="width: 6.5vw; text-align: center;" required>
+                    <input type="number" class="searchinput" id="kids" name="kids" value="0" min="0" max="10" style="width: 6.5vw; text-align: center;" value="<?php if (isset($_GET["kids"])) {echo $_GET["kids"];};?>"required>
                 </div>
                 <div id="submitdiv" class="formdiv">
                     <label></label><br>
