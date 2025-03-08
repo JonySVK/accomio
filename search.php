@@ -21,11 +21,10 @@ $conn = new mysqli($servername, $username, $password, $dbname);
         $people = ((int)$_GET["adults"]) + ((int)$_GET["kids"]);
         
         // places
-        $sql_hotels = "SELECT * FROM hotels_info WHERE location = '" . $place . "'";
+        $sql_hotels = "SELECT * FROM hotels_info WHERE location = '" . $place . "' OR country = '" . $place . "'";
         $s_hotels = $conn->query($sql_hotels);
 
         if ($s_hotels->num_rows == 0) {
-            echo "<script> console.log('1') </script>";
             nothing();
         } else {
         $hotel_id = [];
@@ -95,7 +94,7 @@ $conn = new mysqli($servername, $username, $password, $dbname);
         };
 
         $hotels_string = implode(", ", $hotels);
-        $sql = "SELECT * FROM hotels_info WHERE hotels_id IN ($hotels_string)";
+        $sql = "SELECT * FROM hotels_info WHERE hotels_id IN ($hotels_string) ORDER BY " . $_GET['sort'];
         $s_htls = $conn->query($sql);
 
         $listnum = 0;
@@ -109,7 +108,8 @@ $conn = new mysqli($servername, $username, $password, $dbname);
                         $htlslst = $htlslst . '{
                                         name: "' . $result['name'] . '",
                                         location: "' . $result['location'] . '",
-                                        price: ' . $result['price'] /* edit */ . ', 
+                                        country: "' . $result['country'] . '",
+                                        price: ' . (($result['price'] * ((int)$_GET["adults"])) + ($result['price'] * $result['kids_price'] * ((int)$_GET["kids"])))  . ', 
                                         rating: ' . $result['rating'] . ',
                                         img: "' . $result['img'] . '",
                                         list_num:' . $listnum . ',
@@ -125,19 +125,20 @@ $conn = new mysqli($servername, $username, $password, $dbname);
                                     var hotelDiv = document.createElement("div")
                                     hotelDiv.className = `hotellist-c${hotel.list_num}`
                                     hotelDiv.onclick = function () {document.location.href = `${hotel.url}`}
-                                    hotelDiv.innerHTML = `<img src="${hotel.img}" class="hotellist-img"><span class="hotellist-name">${hotel.name}</span><span class="hotellist-location">${hotel.location}</span><span class="hotellist-price">${hotel.price}€</span><span class="hotellist-rating">${hotel.rating}★</span>`
+                                    hotelDiv.innerHTML = `<img src="${hotel.img}" class="hotellist-img"><span class="hotellist-name">${hotel.name}</span><span class="hotellist-location">${hotel.location} (${hotel.country})</span><span class="hotellist-price">${hotel.price}€</span><span class="hotellist-rating">${hotel.rating}★</span>`
                                     htlslst.appendChild(hotelDiv)
                                 })
                             } 
                             })
                         </script>';
-                    
-                    //$conn->close();
                 };
             };
         };
     } else {
-        $sql = "SELECT * FROM hotels_info";
+        if (!isset($_GET['sort'])) {
+            $_GET['sort'] = "price ASC";
+        };
+        $sql = "SELECT * FROM hotels_info ORDER BY " . $_GET['sort'];
         $selected = $conn->query($sql);
         $listnum = 0;
         $htlslst = '';
@@ -239,13 +240,35 @@ $conn = new mysqli($servername, $username, $password, $dbname);
                     <label for="kids">Počet detí</label><br>
                     <input type="number" class="searchinput" id="kids" name="kids" value="0" min="0" max="10" style="width: 6.5vw; text-align: center;" value="<?php if (isset($_GET["kids"])) {echo $_GET["kids"];};?>"required>
                 </div>
+                <input type="hidden" id="sort" name="sort" value="price ASC">
                 <div id="submitdiv" class="formdiv">
                     <label></label><br>
                     <input type="image" src="styles/icons/search_white.svg" id="submitimage" onmouseover="document.querySelector('#submitimage').src='styles/icons/search_black.svg'" onmouseout="document.querySelector('#submitimage').src='styles/icons/search_white.svg'">
                 </div>
             </form>
         </div>
+
+        <form id="sortform" method="get" action="" onsubmit="location.reload()">
+            <?php if (isset($_GET["place"])) {echo '   
+            <input type="hidden" id="place" name="place" value="' + $_GET["place"] + '">
+            <input type="hidden" id="datefrom" name="datefrom" value="' + $_GET["datefrom"] + '">
+            <input type="hidden" id="dateto" name="dateto" value="' + $_GET["dateto"] + '">
+            <input type="hidden" id="adults" name="adults" value="' + $_GET["adults"] + '">
+            <input type="hidden" id="kids" name="kids" value="' + $_GET["kids"] + '">
+            ';} ?>
+            <div id="sortdiv" class="formdiv">
+                <label for="sort" class="sortlabel">Zoradiť podľa:</label><br>
+                <select class="sortinput" id="sort" name="sort" onchange="document.querySelector('#sortform').submit()">
+                    <option value="price ASC" <?php if ($_GET['sort'] == "price ASC") {echo "selected";} ?>>Ceny vzostupne</option>
+                    <option value="price DESC" <?php if ($_GET['sort'] == "price DESC") {echo "selected";} ?>>Ceny zostupne</option>
+                    <option value="rating ASC" <?php if ($_GET['sort'] == "rating ASC") {echo "selected";} ?>>Hodnotenie vzostupne</option>
+                    <option value="rating DESC" <?php if ($_GET['sort'] == "rating DESC") {echo "selected";} ?>>Hodnotenie zostupne</option>
+                </select>
+            </div>;
+        </form>
+
         <div id="hotelslist"></div>
+
         <div id="footer">
             <div class="footer-c1">
                 <div class="title" style="font-size: 4vh;">accomio</div>

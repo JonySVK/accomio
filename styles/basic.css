@@ -177,6 +177,23 @@ header {
     border-radius: 50%;
 }
 
+.sortlabel {
+    color: white;
+    position: absolute;
+    right: 27.5vw;
+    top: 32vh;
+}
+
+.sortinput {
+    border: none;
+    color: white;
+    background-color: black;
+    position: absolute;
+    right: 18vw;
+    top: 32vh;
+    width: 9vw;
+}
+
 #hotelslist {
     margin-top: 10vh;
     color: white;

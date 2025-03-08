@@ -12,7 +12,11 @@ $dbname = "accomio";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-$sql = "SELECT * FROM hotels_info";
+if (!isset($_GET['sort'])) {
+    $_GET['sort'] = "price ASC";
+}
+
+$sql = "SELECT * FROM hotels_info ORDER BY " . $_GET['sort'];
 $selected = $conn->query($sql);
 $listnum = 0;
 $htlslst = '';
@@ -115,13 +119,35 @@ $conn->close();
                     <label for="kids">Počet detí</label><br>
                     <input type="number" class="searchinput" id="kids" name="kids" value="0" min="0" max="10" style="width: 6.5vw; text-align: center;" required>
                 </div>
+                <input type="hidden" id="sort" name="sort" value="price ASC">
                 <div id="submitdiv" class="formdiv">
                     <label></label><br>
                     <input type="image" src="styles/icons/search_white.svg" id="submitimage" onmouseover="document.querySelector('#submitimage').src='styles/icons/search_black.svg'" onmouseout="document.querySelector('#submitimage').src='styles/icons/search_white.svg'">
                 </div>
             </form>
         </div>
+
+        <form id="sortform" method="get" action="" onsubmit="location.reload()">
+            <?php if (isset($_GET["place"])) {echo '   
+            <input type="hidden" id="place" name="place" value="' + $_GET["place"] + '">
+            <input type="hidden" id="datefrom" name="datefrom" value="' + $_GET["datefrom"] + '">
+            <input type="hidden" id="dateto" name="dateto" value="' + $_GET["dateto"] + '">
+            <input type="hidden" id="adults" name="adults" value="' + $_GET["adults"] + '">
+            <input type="hidden" id="kids" name="kids" value="' + $_GET["kids"] + '">
+            ';} ?>
+            <div id="sortdiv" class="formdiv">
+                <label for="sort">Zoradiť podľa:</label><br>
+                <select class="sortinput" id="sort" name="sort" onchange="document.querySelector('#sortform').submit()">
+                    <option value="price ASC" <?php if ($_GET['sort'] == "price ASC") {echo "selected";} ?>>Ceny vzostupne</option>
+                    <option value="price DESC" <?php if ($_GET['sort'] == "price DESC") {echo "selected";} ?>>Ceny zostupne</option>
+                    <option value="rating ASC" <?php if ($_GET['sort'] == "rating ASC") {echo "selected";} ?>>Hodnotenie vzostupne</option>
+                    <option value="rating DESC" <?php if ($_GET['sort'] == "rating DESC") {echo "selected";} ?>>Hodnotenie zostupne</option>
+                </select>
+            </div>;
+        </form>
+
         <div id="hotelslist"></div>
+
         <div id="footer">
             <div class="footer-c1">
                 <div class="title" style="font-size: 4vh;">accomio</div>
