@@ -250,19 +250,18 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 
         <form id="sortform" method="get" action="" onsubmit="location.reload()">
             <?php if (isset($_GET["place"])) {echo '   
-            <input type="hidden" id="place" name="place" value="' + $_GET["place"] + '">
-            <input type="hidden" id="datefrom" name="datefrom" value="' + $_GET["datefrom"] + '">
-            <input type="hidden" id="dateto" name="dateto" value="' + $_GET["dateto"] + '">
-            <input type="hidden" id="adults" name="adults" value="' + $_GET["adults"] + '">
-            <input type="hidden" id="kids" name="kids" value="' + $_GET["kids"] + '">
+            <input type="hidden" id="place" name="place" value="' . $_GET["place"] . '">
+            <input type="hidden" id="datefrom" name="datefrom" value="' . $_GET["datefrom"] . '">
+            <input type="hidden" id="dateto" name="dateto" value="' . $_GET["dateto"] . '">
+            <input type="hidden" id="adults" name="adults" value="' . $_GET["adults"] . '">
+            <input type="hidden" id="kids" name="kids" value="' . $_GET["kids"] . '">
             ';} ?>
             <div id="sortdiv" class="formdiv">
-                <label for="sort" class="sortlabel">Zoradiť podľa:</label><br>
+            <label for="sort" class="sortlabel">Zoradiť:</label><br>
                 <select class="sortinput" id="sort" name="sort" onchange="document.querySelector('#sortform').submit()">
-                    <option value="price ASC" <?php if ($_GET['sort'] == "price ASC") {echo "selected";} ?>>Ceny vzostupne</option>
-                    <option value="price DESC" <?php if ($_GET['sort'] == "price DESC") {echo "selected";} ?>>Ceny zostupne</option>
-                    <option value="rating ASC" <?php if ($_GET['sort'] == "rating ASC") {echo "selected";} ?>>Hodnotenie vzostupne</option>
-                    <option value="rating DESC" <?php if ($_GET['sort'] == "rating DESC") {echo "selected";} ?>>Hodnotenie zostupne</option>
+                    <option value="price ASC" <?php if ($_GET['sort'] == "price ASC") {echo "selected";} ?>>Najnižšia cena</option>
+                    <option value="price DESC" <?php if ($_GET['sort'] == "price DESC") {echo "selected";} ?>>Najvyššia cena</option>
+                    <option value="rating DESC" <?php if ($_GET['sort'] == "rating DESC") {echo "selected";} ?>>Najlepšie hodnotenie</option>
                 </select>
             </div>;
         </form>

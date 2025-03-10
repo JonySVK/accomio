@@ -1,8 +1,58 @@
 <!DOCTYPE html>
-<!--
-to-dos:
-- langs
--->
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "accomio";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if (isset($_POST["email"])) {
+    $sql_email = "SELECT * FROM customers WHERE email = '" . $_POST["email"] . "'";
+    $s_email = $conn->query($sql_email);
+    if ($s_email->num_rows == 0) {
+        echo '<script>
+            document.addEventListener("DOMContentLoaded", () => {
+            var loginpage = document.querySelector("#login-page")
+            if (loginpage) {
+                loginpage.innerHTML = `<form id="login-page-form" method="post" action="login.php"><label for="email">Zadajte svoj email</label><br><input type="email" id="email" name="email" class="loginfield" value="' . $_POST["email"] . '" disabled><br><label for="name">Zadajte svoje meno</label><br><input type="text" id="name" name="name" class="loginfield"><br><label for="surname">Zadajte svoje priezvisko</label><br><input type="text" id="surname" name="surname" class="loginfield"><br><label for="callingcode">Zadajte svoje telefónne číslo</label><br><select id="callingcode" name="callingcode" class="loginfield" style="margin: 2vh 0vw 2vh 1vw;width:5vw;"><option value="" selected disabled></option><option value="+420">+420</option><option value="+421">+421</option>' /* */ . '</select><input type="number" id="telephone" name="telephone" class="loginfield" style="margin: 2vh 1vw 2vh 0vw;width:15vw;"><br><label for="surname">Zadajte svoju adresu</label><br><input type="text" id="adress" name="adress" class="loginfield"><br><label for="surname">Zadajte svoje heslo</label><br><input type="password" id="password" name="password" class="loginfield"><br><input type="submit" value="Zaregistrovať sa"></form>`
+            }
+            var welcometext = document.querySelector("#welcometext")
+            if (welcometext) {
+                welcometext.innerHTML = "Vytvorte si nový účet"
+            }
+            }) </script>';
+    } else {
+        echo '<script>
+            document.addEventListener("DOMContentLoaded", () => {
+            var loginpage = document.querySelector("#login-page")
+            if (loginpage) {
+                loginpage.innerHTML = `<form id="login-page-form" method="post" action="login.php"><label for="email">Zadajte svoj email</label><br><input type="email" id="email" name="email" class="loginfield" value="' . $_POST["email"] . '" disabled><br><label for="password">Zadajte svoje heslo</label><br><input type="password" id="password" name="password" class="loginfield"><br><input type="submit" value="Prihlásiť sa"></form>`
+            }
+            var welcometext = document.querySelector("#welcometext")
+            if (welcometext) {
+                welcometext.innerHTML = "Prihláste sa"
+            }
+            }) </script>';
+    }
+} elseif (isset($_POST["password"])) {
+
+} elseif (isset($_POST["name"])) {
+    
+} else {
+    echo '<script>
+            document.addEventListener("DOMContentLoaded", () => {
+            var loginpage = document.querySelector("#login-page")
+            if (loginpage) {
+                loginpage.innerHTML = `<form id="login-page-form" method="post" action="login.php"><label for="email">Zadajte svoj email</label><br><input type="email" id="email" name="email" class="loginfield"><br><input type="submit" value="Pokračovať"></form>`
+            }
+            var welcometext = document.querySelector("#welcometext")
+            if (welcometext) {
+                welcometext.innerHTML = "Prihláste sa alebo si vytvorte nový účet"
+            }
+            }) </script>';
+};
+?>
 <html lang="sk"> <!-- after translation edit -->
     <head>
         <meta charset="UTF-8">
@@ -35,14 +85,8 @@ to-dos:
                 <abbr title="Česky"><img src="styles/languages/czech.svg" id="lang-cz" class="langimg"></abbr>
             </div>
         </header>
-        <div class="welcometext">Prihláste sa alebo si vytvorte nový účet</div>
-        <div id="login-page">
-            <form id="login-page-form" method="post" action="db-login.php">
-                <label for="email">Zadajte svoj email</label><br>
-                <input type="email" id="email" name="email" class="loginfield"><br>
-                <input type="submit" value="Pokračovať">
-            </form>
-        </div>
+        <div class="welcometext" id="welcometext"></div>
+        <div id="login-page"></div>
         <div id="footer">
             <div class="footer-c1">
                 <div class="title" style="font-size: 4vh;">accomio</div>

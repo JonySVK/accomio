@@ -18,16 +18,21 @@
     font-size: 6vh;
 }
 
-#login-page-form input[type=email], input[type=password] {
+.loginfield, .loginfield {
     background-color: white;
     color: black;
     padding: 5px;
     margin: 2vh 1vw 2vh 1vw;
     font-size: 2.5vh;
     border: 1px solid black;
+    width: 20vw;
 }
 
-#login-page-form input[type=email]:focus, input[type=password]:focus {
+label {
+    margin: 2vh 1vw 2vh 1vw;
+}
+
+.loginfield:focus, .loginfield:focus {
     border: 1px solid black;
 }
 
@@ -43,4 +48,9 @@
 #login-page-form input[type=submit]:hover {
     background-color: #27f695;
     color: black;
+}
+
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
