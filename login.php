@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <?php
 $servername = "localhost";
@@ -7,27 +10,27 @@ $dbname = "accomio";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-if (isset($_POST["email"])) {
+if (isset($_POST["email"])) { // email
     $sql_email = "SELECT * FROM customers WHERE email = '" . $_POST["email"] . "'";
     $s_email = $conn->query($sql_email);
-    if ($s_email->num_rows == 0) {
+    if ($s_email->num_rows == 0) { // reg form
         echo '<script>
             document.addEventListener("DOMContentLoaded", () => {
             var loginpage = document.querySelector("#login-page")
             if (loginpage) {
-                loginpage.innerHTML = `<form id="login-page-form" method="post" action="login.php"><label for="email">Zadajte svoj email</label><br><input type="email" id="email" name="email" class="loginfield" value="' . $_POST["email"] . '" disabled><br><label for="name">Zadajte svoje meno</label><br><input type="text" id="name" name="name" class="loginfield"><br><label for="surname">Zadajte svoje priezvisko</label><br><input type="text" id="surname" name="surname" class="loginfield"><br><label for="callingcode">Zadajte svoje telefónne číslo</label><br><select id="callingcode" name="callingcode" class="loginfield" style="margin: 2vh 0vw 2vh 1vw;width:5vw;"><option value="" selected disabled></option><option value="+420">+420</option><option value="+421">+421</option>' /* */ . '</select><input type="number" id="telephone" name="telephone" class="loginfield" style="margin: 2vh 1vw 2vh 0vw;width:15vw;"><br><label for="surname">Zadajte svoju adresu</label><br><input type="text" id="adress" name="adress" class="loginfield"><br><label for="surname">Zadajte svoje heslo</label><br><input type="password" id="password" name="password" class="loginfield"><br><input type="submit" value="Zaregistrovať sa"></form>`
+                loginpage.innerHTML = `<form id="login-page-form" method="post" action="login.php"><label for="emailx">Zadajte svoj email</label><br><input type="email" id="emailx" name="emailx" class="loginfield" value="' . $_POST["email"] . '" readonly required><br><label for="name">Zadajte svoje meno</label><br><input type="text" id="name" name="name" class="loginfield" required><br><label for="surname">Zadajte svoje priezvisko</label><br><input type="text" id="surname" name="surname" class="loginfield" required><br><label for="callingcode">Zadajte svoje telefónne číslo</label><br><select id="callingcode" name="callingcode" class="loginfield" style="margin: 2vh 0vw 2vh 1vw;width:5vw;" required><option value="" selected disabled></option><option value="+420">+420</option><option value="+421">+421</option>' /* */ . '</select><input type="number" id="telephone" name="telephone" class="loginfield" style="margin: 2vh 1vw 2vh 0vw;width:15vw;" maxlength="9" minlength="9" required><br><label for="address">Zadajte svoju adresu</label><br><input type="text" id="address" name="address" class="loginfield" required><br><label for="city">Zadajte svoje mesto</label><br><input type="text" id="city" name="city" class="loginfield" required><br><label for="country">Vyberte svoj štát</label><br><select id="country" name="country" class="loginfield" required><option value="" selected disabled></option><option value="Czech republic">Česká republika</option><option value="Slovakia">Slovenská republika</option>' /* */ . '</select><br><label for="nationality">Vyberte svoju národnosť</label><br><select id="nationality" name="nationality" class="loginfield" required><option value="" selected disabled></option><option value="Czech">Česká</option><option value="Slovak">Slovenská</option>' /* */ . '</select><br><label for="password">Zadajte svoje heslo</label><br><input type="password" id="passwordx" name="passwordx" class="loginfield" required><br><input type="submit" value="Zaregistrovať sa"></form>`
             }
             var welcometext = document.querySelector("#welcometext")
             if (welcometext) {
                 welcometext.innerHTML = "Vytvorte si nový účet"
             }
             }) </script>';
-    } else {
+    } else { // log form
         echo '<script>
             document.addEventListener("DOMContentLoaded", () => {
             var loginpage = document.querySelector("#login-page")
             if (loginpage) {
-                loginpage.innerHTML = `<form id="login-page-form" method="post" action="login.php"><label for="email">Zadajte svoj email</label><br><input type="email" id="email" name="email" class="loginfield" value="' . $_POST["email"] . '" disabled><br><label for="password">Zadajte svoje heslo</label><br><input type="password" id="password" name="password" class="loginfield"><br><input type="submit" value="Prihlásiť sa"></form>`
+                loginpage.innerHTML = `<form id="login-page-form" method="post" action="login.php"><label for="emailx">Zadajte svoj email</label><br><input type="email" id="emailx" name="emailx" class="loginfield" value="' . $_POST["email"] . '" readonly required><br><label for="password">Zadajte svoje heslo</label><br><input type="password" id="password" name="password" class="loginfield" required><br><input type="submit" value="Prihlásiť sa"></form>`
             }
             var welcometext = document.querySelector("#welcometext")
             if (welcometext) {
@@ -35,16 +38,97 @@ if (isset($_POST["email"])) {
             }
             }) </script>';
     }
-} elseif (isset($_POST["password"])) {
-
-} elseif (isset($_POST["name"])) {
-    
-} else {
+} elseif (isset($_POST["password"])) { // log
+    $sql_email = "SELECT * FROM customers WHERE email = '" . $_POST["emailx"] . "'";
+    $s_email = $conn->query($sql_email);
+    $result = $s_email->fetch_assoc();
+    if (password_verify($_POST["password"], $result["password"])) { // correct
+        $log = password_hash($_SERVER['REMOTE_ADDR'], PASSWORD_DEFAULT);
+        $sql_log = "UPDATE customers SET log = '" . $log . "' WHERE email = '" . $_POST["emailx"] . "'";
+        $conn->query($sql_log);
+        if ($conn->affected_rows > 0) { // success
+            $_SESSION["lg"] = $log;
+            $_SESSION["cd"] = $result["code"];
+            header("Location: /accomio");
+        } else { // error
+            echo "<script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    var loginpage = document.querySelector('#login-page');
+                    if (loginpage) {
+                        loginpage.innerHTML = `<form id='login-page-form' method='post' action='login.php'><label for='emailx'>Zadajte svoj email</label><br><input type='email' id='emailx' name='emailx' class='loginfield' value='" . $_POST["email"] . "' readonly required><br><label for='password'>Zadajte svoje heslo</label><br><input type='password' id='password' name='password' class='loginfield' required><br><input type='submit' value='Prihlásiť sa'></form>`;
+                    }
+                    var welcometext = document.querySelector('#welcometext');
+                    if (welcometext) {
+                        welcometext.innerHTML = `<div class='loginalert' style='background-color:red;'>Prihlásenie bolo. Skúste to znova.</div>Prihláste sa`;
+                </script>";
+        };
+    } else { // wrong
+        echo "<script>
+            document.addEventListener('DOMContentLoaded', () => {
+                var loginpage = document.querySelector('#login-page');
+                if (loginpage) {
+                    loginpage.innerHTML = `<form id='login-page-form' method='post' action='login.php'><label for='emailx'>Zadajte svoj email</label><br><input type='email' id='emailx' name='emailx' class='loginfield' value='" . $_POST["email"] . "' required><br><label for='password'>Zadajte svoje heslo</label><br><input type='password' id='password' name='password' class='loginfield' required><br><input type='submit' value='Prihlásiť sa'></form>`;
+                }
+                var welcometext = document.querySelector('#welcometext');
+                if (welcometext) {
+                    welcometext.innerHTML = `<div class='loginalert' style='background-color:red;'>Nesprávne heslo. Skúste to znova.</div>Prihláste sa`;
+                }
+            });
+        </script>";
+    };
+} elseif (isset($_POST["passwordx"])) { // reg
+    $sql_emailx = "SELECT * FROM customers WHERE email = '" . $_POST["emailx"] . "'";
+    $s_emailx = $conn->query($sql_emailx);
+    if ($s_emailx->num_rows > 0) { // already reg
+        echo "<script>
+            document.addEventListener('DOMContentLoaded', () => {
+                var loginpage = document.querySelector('#login-page');
+                if (loginpage) {
+                    loginpage.innerHTML = `<form id='login-page-form' method='post' action='login.php'><label for='emailx'>Zadajte svoj email</label><br><input type='email' id='emailx' name='emailx' class='loginfield' value='" . $_POST["emailx"] . "' required><br><label for='password'>Zadajte svoje heslo</label><br><input type='password' id='password' name='password' class='loginfield' required><br><input type='submit' value='Prihlásiť sa'></form>`;
+                }
+                var welcometext = document.querySelector('#welcometext');
+                if (welcometext) {
+                    welcometext.innerHTML = `<div class='loginalert' style='background-color:red;'>Email je už registroavný. Prosím prihláste sa.</div>Prihláste sa`;
+                }
+            });
+        </script>";
+    } else {
+        $sql_reg = "INSERT INTO customers (name, surname, email, telephone, address, nationality, password, code) VALUES ('" . $_POST["name"] . "', '" . $_POST["surname"] . "', '" . $_POST["emailx"] . "', '" . $_POST["callingcode"] . $_POST["telephone"] . "', '" . $_POST["address"] . ", " . $_POST["city"] . ", " . $_POST["country"] . "', '" . $_POST["nationality"] . "', '" . password_hash($_POST["passwordx"], PASSWORD_DEFAULT) . "', '" . bin2hex(random_bytes(16)) . "')";
+        $conn->query($sql_reg);
+        if ($conn->affected_rows > 0) { // success
+            echo "<script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    var loginpage = document.querySelector('#login-page');
+                    if (loginpage) {
+                        loginpage.innerHTML = `<form id='login-page-form' method='post' action='login.php'><label for='emailx'>Zadajte svoj email</label><br><input type='email' id='emailx' name='emailx' class='loginfield' value='" . $_POST["emailx"] . "' required><br><label for='password'>Zadajte svoje heslo</label><br><input type='password' id='password' name='password' class='loginfield' required><br><input type='submit' value='Prihlásiť sa'></form>`;
+                    }
+                    var welcometext = document.querySelector('#welcometext');
+                    if (welcometext) {
+                        welcometext.innerHTML = `<div class='loginalert' style='background-color:green;'>Úspešne ste sa zaregistrovali. Prosím prihláste sa.</div>Prihláste sa`;
+                    }
+                });
+            </script>";
+        } else { // error
+            echo '<script>
+            document.addEventListener("DOMContentLoaded", () => {
+                var loginpage = document.querySelector("#login-page");
+                if (loginpage) {
+                    loginpage.innerHTML = `<form id="login-page-form" method="post" action="login.php"><label for="emailx">Zadajte svoj email</label><br><input type="email" id="emailx" name="emailx" class="loginfield" value="' . $_POST["email"] . '" readonly required><br><label for="name">Zadajte svoje meno</label><br><input type="text" id="name" name="name" class="loginfield" required><br><label for="surname">Zadajte svoje priezvisko</label><br><input type="text" id="surname" name="surname" class="loginfield" required><br><label for="callingcode">Zadajte svoje telefónne číslo</label><br><select id="callingcode" name="callingcode" class="loginfield" style="margin: 2vh 0vw 2vh 1vw;width:5vw;" required><option value="" selected disabled></option><option value="+420">+420</option><option value="+421">+421</option>' /* */ . '</select><input type="number" id="telephone" name="telephone" class="loginfield" style="margin: 2vh 1vw 2vh 0vw;width:15vw;" maxlength="9" minlength="9" required><br><label for="address">Zadajte svoju adresu</label><br><input type="text" id="address" name="address" class="loginfield" required><br><label for="city">Zadajte svoje mesto</label><br><input type="text" id="city" name="city" class="loginfield" required><br><label for="country">Vyberte svoj štát</label><br><select id="country" name="country" class="loginfield" required><option value="" selected disabled></option><option value="Czech republic">Česká republika</option><option value="Slovakia">Slovenská republika</option>' /* */ . '</select><br><label for="nationality">Vyberte svoju národnosť</label><br><select id="nationality" name="nationality" class="loginfield" required><option value="" selected disabled></option><option value="Czech">Česká</option><option value="Slovak">Slovenská</option>' /* */ . '</select><br><label for="password">Zadajte svoje heslo</label><br><input type="password" id="passwordx" name="passwordx" class="loginfield" required><br><input type="submit" value="Zaregistrovať sa"></form>`
+                }
+                var welcometext = document.querySelector("#welcometext");
+                if (welcometext) {
+                    welcometext.innerHTML = `<div class="loginalert" style="background-color:red;">Registrácia bola neúspečná. Skúste to znova.</div>Prihláste sa`;
+                }
+            });
+        </script>';
+        };
+    };
+} else { // start
     echo '<script>
             document.addEventListener("DOMContentLoaded", () => {
             var loginpage = document.querySelector("#login-page")
             if (loginpage) {
-                loginpage.innerHTML = `<form id="login-page-form" method="post" action="login.php"><label for="email">Zadajte svoj email</label><br><input type="email" id="email" name="email" class="loginfield"><br><input type="submit" value="Pokračovať"></form>`
+                loginpage.innerHTML = `<form id="login-page-form" method="post" action="login.php"><label for="email">Zadajte svoj email</label><br><input type="email" id="email" name="email" class="loginfield" required><br><input type="submit" value="Pokračovať"></form>`
             }
             var welcometext = document.querySelector("#welcometext")
             if (welcometext) {

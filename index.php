@@ -74,7 +74,8 @@ $conn->close();
                     <abbr class="headertext" id="ht2" title="Zákaznícka podpora"><img src="styles/icons/help.svg" class="headerimgs"></abbr>
                 </div></a>
                 <a href="login" class="aimg"><div class="headerdiv" id="hi2">
-                    <abbr class="headertext" id="ht2" title="Prihláste sa/Registrujte sa"><img src="styles/icons/account.svg" class="headerimgs"></abbr>
+                    <abbr class="headertext" id="ht3" title="Prihláste sa/Registrujte sa"><img src="styles/icons/account.svg" class="headerimgs"></abbr>
+                    <span class="headername">Ján</span> <!-- edit by php -->
                 </div></a>
             </nav>
             <div id="lang-box">
@@ -129,8 +130,8 @@ $conn->close();
 
         <form id="sortform" method="get" action="" onsubmit="location.reload()">
             <div id="sortdiv" class="formdiv">
-                <label for="sort" class="sortlabel">Zoradiť:</label><br>
-                <select class="sortinput" id="sort" name="sort" onchange="document.querySelector('#sortform').submit()">
+                <label for="sort" class="sortlabel" style="top: 62vh;">Zoradiť:</label><br>
+                <select class="sortinput" id="sort" name="sort" onchange="document.querySelector('#sortform').submit()" style="top: 62vh;">
                     <option value="price ASC" <?php if ($_GET['sort'] == "price ASC") {echo "selected";} ?>>Najnižšia cena</option>
                     <option value="price DESC" <?php if ($_GET['sort'] == "price DESC") {echo "selected";} ?>>Najvyššia cena</option>
                     <option value="rating DESC" <?php if ($_GET['sort'] == "rating DESC") {echo "selected";} ?>>Najlepšie hodnotenie</option>

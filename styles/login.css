@@ -54,3 +54,8 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
     -webkit-appearance: none;
     margin: 0;
 }
+
+.loginalert {
+    font-size: 3.2vh;
+    margin: -6vh 18vw 4vh 18vw;
+}
