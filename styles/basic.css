@@ -26,12 +26,13 @@ header {
     top: 0;
     height: 5vh;
     display: inline-block;
-    padding:  5vh 18vw 0vh 0vw;
+    padding:  5.5vh 18vw 0vh 0vw;
 }
 
 .headerimgs {
     height: 5vh;
     margin: 0 0.3vw 0 0.3vw;
+    cursor: pointer;
 }
 
 .headertext {
@@ -54,7 +55,7 @@ header {
     padding-bottom: 1.25vh;
     vertical-align: bottom;
     display: inline-block;
-    margin: 0 0 1.5vh -0.1vw;
+    cursor: pointer;
 }
 
 .headerdiv {
@@ -83,6 +84,43 @@ header {
     right: 18vw;
     position: absolute;
     z-index: 100;
+}
+
+#user-box {
+    text-align: center;
+    height: 0;
+    width: 0;
+    background-color:#27f695;
+    color: black;
+    display: block;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 2.5vh;
+    padding: 2vh 2vh 2vh 2vh;
+    visibility: hidden;
+    border: hidden;
+    border-radius: 50px;
+    right: 18vw;
+    position: absolute;
+    z-index: 100;
+}
+
+.userbtn {
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 20px;
+    padding: 0.75vh 2vh;
+    margin: 0.5vh;
+    font-size: 2vh;
+    cursor: pointer;
+    width: 10vw;
+}
+
+.userbtn:hover {
+    color: white;
+    background-color: black;
 }
 
 .langimg {
@@ -127,10 +165,11 @@ header {
     background-color: white;
     color: black;
     border: none;
-    padding: 15px;
-    margin: 2px;
-    height: 1vh;
-    
+    padding: 2vh 2vh;
+    margin: 0.2vw;
+    height: 3vh;
+    width: 18vh;
+    font-size: 1.8vh;
 }
 
 #searchform input[type=image] {

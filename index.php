@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<!--
-to-dos:
-- langs
-- cities in placelist
--->
 <?php
+session_start();
+
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -12,9 +8,19 @@ $dbname = "accomio";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
+$servername = "localhost";
+                            
+if (isset($_SESSION["cd"])) {
+    $sql_login = "SELECT * FROM customers WHERE code = '" . $_SESSION["cd"] . "' AND log = '" . $_SESSION["lg"] . "'";
+    $s_login = $conn->query($sql_login);
+    if ($s_login->num_rows == 0) {
+        session_destroy();
+    };
+};
+
 if (!isset($_GET['sort'])) {
     $_GET['sort'] = "price ASC";
-}
+};
 
 $sql = "SELECT * FROM hotels_info ORDER BY " . $_GET['sort'];
 $selected = $conn->query($sql);
@@ -54,6 +60,12 @@ echo '<script>
 
 $conn->close();
 ?>
+<!DOCTYPE html>
+<!--
+to-dos:
+- langs
+- cities in placelist
+-->
 <html lang="sk"> <!-- after translation edit -->
     <head>
         <meta charset="UTF-8">
@@ -73,9 +85,23 @@ $conn->close();
                 <a href="help" class="aimg"><div class="headerdiv" id="hi2">
                     <abbr class="headertext" id="ht2" title="Zákaznícka podpora"><img src="styles/icons/help.svg" class="headerimgs"></abbr>
                 </div></a>
-                <a href="login" class="aimg"><div class="headerdiv" id="hi2">
-                    <abbr class="headertext" id="ht3" title="Prihláste sa/Registrujte sa"><img src="styles/icons/account.svg" class="headerimgs"></abbr>
-                    <span class="headername">Ján</span> <!-- edit by php -->
+                <a <?php if (isset($_SESSION["cd"])) {echo "onclick='userbox()'";} else {echo "href='login'";};?> class="aimg"><div class="headerdiv" id="hi2">
+                    <abbr class="headertext" id="ht3" style="text-decoration: none; border-bottom: none;" title="<?php if (isset($_SESSION["cd"])) {echo "Používateľ";} else {echo "Prihláste sa/Registrujte sa";};?>"><img src="styles/icons/account.svg" class="headerimgs"></abbr>
+                    <span class="headername">
+                        <?php
+                            $servername = "localhost";
+                            $username = "root";
+                            $password = "";
+                            $dbname = "accomio";
+                            $conn = new mysqli($servername, $username, $password, $dbname);
+                            if (isset($_SESSION["cd"])) {
+                                $sql_name = "SELECT * FROM customers WHERE code = '" . $_SESSION["cd"] . "' AND log = '" . $_SESSION["lg"] . "'";
+                                $s_name = $conn->query($sql_name);
+                                $result_name = $s_name->fetch_assoc();
+                                echo $result_name['name'];
+                            };
+                        ?>
+                    </span>
                 </div></a>
             </nav>
             <div id="lang-box">
@@ -85,13 +111,17 @@ $conn->close();
                 <abbr title="Slovensky"><img src="styles/languages/slovak.svg" id="lang-sk" class="langimg"></abbr>
                 <abbr title="Česky"><img src="styles/languages/czech.svg" id="lang-cz" class="langimg"></abbr>
             </div>
+            <div id="user-box">
+                <button class="userbtn" onclick="window.location.href = 'user'">Môj účet</button><br>
+                <button class="userbtn" onclick="window.location.href = 'scripts/logout.php'">Odhlásiť sa</button>
+            </div>
         </header>
         <div id="search" style="color:white;">
             <div class="welcometext">Kam to dnes bude?</div>
             <form id="searchform" method="get" action="search">
                 <div id="placediv" class="formdiv">
                 <label for="place">Kam cestujete?</label><br>
-                <input list="placelist" class="searchinput" id="place" name="place" placeholder=""  required>
+                <input list="placelist" class="searchinput" id="place" name="place" placeholder="" style="width: 15vw;" required>
                     <datalist id="placelist">
                         <div id="placelistdiv" class="formdiv">
                             <!-- delete after connect database and edit  -->    
@@ -136,7 +166,7 @@ $conn->close();
                     <option value="price DESC" <?php if ($_GET['sort'] == "price DESC") {echo "selected";} ?>>Najvyššia cena</option>
                     <option value="rating DESC" <?php if ($_GET['sort'] == "rating DESC") {echo "selected";} ?>>Najlepšie hodnotenie</option>
                 </select>
-            </div>;
+            </div>
         </form>
 
         <div id="hotelslist"></div>

@@ -1,8 +1,6 @@
 <?php
 session_start();
-?>
-<!DOCTYPE html>
-<?php
+
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -10,7 +8,16 @@ $dbname = "accomio";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-if (isset($_POST["email"])) { // email
+if (isset($_SESSION["cd"])) {
+    $sql_login = "SELECT * FROM customers WHERE code = '" . $_SESSION["cd"] . "' AND log = '" . $_SESSION["lg"] . "'";
+    $s_login = $conn->query($sql_login);
+    if ($s_login->num_rows == 0) {
+        session_destroy();
+    };
+};
+if (isset($_SESSION["cd"])) {
+    header("Location: /accomio/user");
+} elseif (isset($_POST["email"])) { // email
     $sql_email = "SELECT * FROM customers WHERE email = '" . $_POST["email"] . "'";
     $s_email = $conn->query($sql_email);
     if ($s_email->num_rows == 0) { // reg form
@@ -137,13 +144,14 @@ if (isset($_POST["email"])) { // email
             }) </script>';
 };
 ?>
+<!DOCTYPE html>
 <html lang="sk"> <!-- after translation edit -->
     <head>
         <meta charset="UTF-8">
-        <title>accomio | Hotely, penzióny a omnoho viac</title>
+        <title>Prihlásenie sa | accomio | Hotely, penzióny a omnoho viac</title>
         <link rel="icon" type="image/x-icon" href="styles/icons/icon.ico">
         <link rel='stylesheet' href='styles/basic.css'>
-        <link rel='stylesheet' href='styles/login.css'>
+        <link rel='stylesheet' href='styles/user.css'>
         <script src='scripts/basic.js'></script>
     </head>
     <body>
@@ -157,8 +165,23 @@ if (isset($_POST["email"])) { // email
                 <a href="help" class="aimg"><div class="headerdiv" id="hi2">
                     <abbr class="headertext" id="ht2" title="Zákaznícka podpora"><img src="styles/icons/help.svg" class="headerimgs"></abbr>
                 </div></a>
-                <a href="login" class="aimg"><div class="headerdiv" id="hi2">
-                    <abbr class="headertext" id="ht2" title="Prihláste sa/Registrujte sa"><img src="styles/icons/account.svg" class="headerimgs"></abbr>
+                <a <?php if (isset($_SESSION["cd"])) {echo "onclick='userbox()'";} else {echo "href='login'";};?> class="aimg"><div class="headerdiv" id="hi2">
+                    <abbr class="headertext" id="ht3" style="text-decoration: none; border-bottom: none;" title="<?php if (isset($_SESSION["cd"])) {echo "Používateľ";} else {echo "Prihláste sa/Registrujte sa";};?>"><img src="styles/icons/account.svg" class="headerimgs"></abbr>
+                    <span class="headername">
+                        <?php
+                            $servername = "localhost";
+                            $username = "root";
+                            $password = "";
+                            $dbname = "accomio";
+                            $conn = new mysqli($servername, $username, $password, $dbname);
+                            if (isset($_SESSION["cd"])) {
+                                $sql_name = "SELECT * FROM customers WHERE code = '" . $_SESSION["cd"] . "' AND log = '" . $_SESSION["lg"] . "'";
+                                $s_name = $conn->query($sql_name);
+                                $result_name = $s_name->fetch_assoc();
+                                echo $result_name['name'];
+                            };
+                        ?>
+                    </span>
                 </div></a>
             </nav>
             <div id="lang-box">
@@ -167,6 +190,10 @@ if (isset($_POST["email"])) { // email
                 <abbr title="Deutsch"><img src="styles/languages/german.svg" id="lang-de" class="langimg"></abbr>
                 <abbr title="Slovensky"><img src="styles/languages/slovak.svg" id="lang-sk" class="langimg"></abbr>
                 <abbr title="Česky"><img src="styles/languages/czech.svg" id="lang-cz" class="langimg"></abbr>
+            </div>
+            <div id="user-box">
+                <button class="userbtn" onclick="window.location.href = 'user'">Môj účet</button><br>
+                <button class="userbtn" onclick="window.location.href = 'scripts/logout.php'">Odhlásiť sa</button>
             </div>
         </header>
         <div class="welcometext" id="welcometext"></div>

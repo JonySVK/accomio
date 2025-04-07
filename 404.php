@@ -1,3 +1,21 @@
+<?php
+session_start();
+
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "accomio";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if (isset($_SESSION["cd"])) {
+    $sql_login = "SELECT * FROM customers WHERE code = '" . $_SESSION["cd"] . "' AND log = '" . $_SESSION["lg"] . "'";
+    $s_login = $conn->query($sql_login);
+    if ($s_login->num_rows == 0) {
+        session_destroy();
+    };
+};
+?>
 <!DOCTYPE html>
 <!--
 to-dos:
@@ -12,8 +30,8 @@ to-dos:
         <script src='scripts/basic.js'></script>
     </head>
     <body>
-        <header>
-        <div class="title" onclick="window.location.href ='/accomio'">accomio</div>
+    <header>
+            <div class="title" onclick="window.location.href ='/accomio'">accomio</div>
             <nav class="headerbtns">
                 <a onclick="langbox()" class="aimg"><div class="headerdiv" id="hi1">
                     <abbr class="headertext" id="ht1" title="Zmeniť jazyk"><img src="styles/icons/language.svg" class="headerimgs"></abbr>
@@ -22,8 +40,23 @@ to-dos:
                 <a href="help" class="aimg"><div class="headerdiv" id="hi2">
                     <abbr class="headertext" id="ht2" title="Zákaznícka podpora"><img src="styles/icons/help.svg" class="headerimgs"></abbr>
                 </div></a>
-                <a href="login" class="aimg"><div class="headerdiv" id="hi2">
-                    <abbr class="headertext" id="ht2" title="Prihláste sa/Registrujte sa"><img src="styles/icons/account.svg" class="headerimgs"></abbr>
+                <a <?php if (isset($_SESSION["cd"])) {echo "onclick='userbox()'";} else {echo "href='login'";};?> class="aimg"><div class="headerdiv" id="hi2">
+                    <abbr class="headertext" id="ht3" style="text-decoration: none; border-bottom: none;" title="<?php if (isset($_SESSION["cd"])) {echo "Používateľ";} else {echo "Prihláste sa/Registrujte sa";};?>"><img src="styles/icons/account.svg" class="headerimgs"></abbr>
+                    <span class="headername">
+                        <?php
+                            $servername = "localhost";
+                            $username = "root";
+                            $password = "";
+                            $dbname = "accomio";
+                            $conn = new mysqli($servername, $username, $password, $dbname);
+                            if (isset($_SESSION["cd"])) {
+                                $sql_name = "SELECT * FROM customers WHERE code = '" . $_SESSION["cd"] . "' AND log = '" . $_SESSION["lg"] . "'";
+                                $s_name = $conn->query($sql_name);
+                                $result_name = $s_name->fetch_assoc();
+                                echo $result_name['name'];
+                            };
+                        ?>
+                    </span>
                 </div></a>
             </nav>
             <div id="lang-box">
@@ -33,9 +66,14 @@ to-dos:
                 <abbr title="Slovensky"><img src="styles/languages/slovak.svg" id="lang-sk" class="langimg"></abbr>
                 <abbr title="Česky"><img src="styles/languages/czech.svg" id="lang-cz" class="langimg"></abbr>
             </div>
+            <div id="user-box">
+                <button class="userbtn" onclick="window.location.href = 'user'">Môj účet</button><br>
+                <button class="userbtn" onclick="window.location.href = 'scripts/logout.php'">Odhlásiť sa</button>
+            </div>
         </header>
-        <div class="welcometext">Po ceste ste sa asi stratili...</div>
-        <div style="color:white;text-align:center;font-family: 'Roboto', sans-serif; font-weight: 400; font-style: normal; font-size: 3vh; padding-top: 2vh;">Stránka, ktorú hľadáte, neexistuje. Skúste skontrolovať URL adresu.<br><br>ERROR 404</div>
+        <img src="styles/icons/lost.svg" style="width: 20vh; height: 20vh; position: absolute; top: 30vh; left: 50%; transform: translate(-50%, -50%);">
+        <div class="welcometext" style="padding-top: 30vh;">Po ceste ste sa asi stratili...</div>
+        <div style="color:white;text-align:center;font-family: 'Roboto', sans-serif; font-weight: 400; font-style: normal; font-size: 3vh; padding-top: 2vh;">Stránka, ktorú hľadáte, neexistuje. Skúste skontrolovať URL adresu.<br><br><i>ERROR 404</i></div>
         <div id="footer">
             <div class="footer-c1">
                 <div class="title" style="font-size: 4vh;">accomio</div>

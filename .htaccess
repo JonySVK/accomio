@@ -1,17 +1,20 @@
 RewriteEngine On
 RewriteRule ^search$ search.php [L]
-RewriteRule ^login$ login.php [L]
-RewriteRule ^register$ login.php [L]
 RewriteRule ^help$ help.php [L]
 RewriteRule ^terms$ terms.php [L]
 RewriteRule ^privacy$ privacy.php [L]
 RewriteRule ^about$ about.php [L]
 RewriteRule ^contact$ contact.php [L]
 RewriteRule ^partners$ partners.php [L]
+
+RewriteRule ^login$ login.php [L]
+RewriteRule ^user$ user.php [L]
+RewriteRule ^user/personal-data$ user.php [L]
+RewriteRule ^user/bookings-history$ user.php [L]
+
 RewriteRule ^scripts$ 404.php [L]
 RewriteRule ^styles$ 404.php [L]
 RewriteRule ^styles/icons$ 404.php [L]
 RewriteRule ^styles/languages$ 404.php [L]
 
 ErrorDocument 404 /accomio/404.php
-# after expand from localhost edit
