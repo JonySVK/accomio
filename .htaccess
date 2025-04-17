@@ -17,4 +17,4 @@ RewriteRule ^styles$ 404.php [L]
 RewriteRule ^styles/icons$ 404.php [L]
 RewriteRule ^styles/languages$ 404.php [L]
 
-ErrorDocument 404 /accomio/404.php
+ErrorDocument 404 /accomio/hotels-404.php

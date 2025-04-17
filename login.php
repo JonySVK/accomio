@@ -158,6 +158,9 @@ if (isset($_SESSION["cd"])) {
     <header>
             <div class="title" onclick="window.location.href ='/accomio'">accomio</div>
             <nav class="headerbtns">
+                <a href="search" class="aimg"><div class="headerdiv" id="hi2">
+                    <abbr class="headertext" id="ht2" title="Vyhľadávanie"><img src="styles/icons/search_world.svg" class="headerimgs"></abbr>
+                </div></a>
                 <a onclick="langbox()" class="aimg"><div class="headerdiv" id="hi1">
                     <abbr class="headertext" id="ht1" title="Zmeniť jazyk"><img src="styles/icons/language.svg" class="headerimgs"></abbr>
                     <div id="hi1style" style="display:inline;"></div>
@@ -167,7 +170,7 @@ if (isset($_SESSION["cd"])) {
                 </div></a>
                 <a <?php if (isset($_SESSION["cd"])) {echo "onclick='userbox()'";} else {echo "href='login'";};?> class="aimg"><div class="headerdiv" id="hi2">
                     <abbr class="headertext" id="ht3" style="text-decoration: none; border-bottom: none;" title="<?php if (isset($_SESSION["cd"])) {echo "Používateľ";} else {echo "Prihláste sa/Registrujte sa";};?>"><img src="styles/icons/account.svg" class="headerimgs"></abbr>
-                    <span class="headername">
+                    <span id="headername">
                         <?php
                             $servername = "localhost";
                             $username = "root";

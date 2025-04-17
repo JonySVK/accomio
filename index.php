@@ -35,9 +35,9 @@ while($result = $selected->fetch_assoc()) {
     $htlslst = $htlslst . '{
         name: "' . $result['name'] . '",
         location: "' . $result['location'] . '",
+        country: "' . $result['country'] . '",
         price: ' . $result['price'] . ',
         rating: ' . $result['rating'] . ',
-        img: "' . $result['img'] . '",
         list_num:' . $listnum . ',
         url: "' . $result['url'] . '"
     },';
@@ -51,7 +51,7 @@ echo '<script>
                     var hotelDiv = document.createElement("div")
                     hotelDiv.className = `hotellist-c${hotel.list_num}`
                     hotelDiv.onclick = function () {document.location.href = `${hotel.url}`}
-                    hotelDiv.innerHTML = `<img src="${hotel.img}" class="hotellist-img"><span class="hotellist-name">${hotel.name}</span><span class="hotellist-location">${hotel.location}</span><span class="hotellist-price">${hotel.price}€</span><span class="hotellist-rating">${hotel.rating}★</span>`
+                    hotelDiv.innerHTML = `<img src="styles/hotels/${hotel.url}-1.png" class="hotellist-img"><span class="hotellist-name">${hotel.name}</span><abbr style="text-decoration:none" title="${hotel.country}"><span class="hotellist-location">${hotel.location}</span></abbr><span class="hotellist-price">${hotel.price}€</span><span class="hotellist-rating">${hotel.rating}★</span>`
                     htlslst.appendChild(hotelDiv)
                 })
             } 
@@ -78,6 +78,9 @@ to-dos:
     <header>
             <div class="title" onclick="window.location.href ='/accomio'">accomio</div>
             <nav class="headerbtns">
+                <a href="search" class="aimg"><div class="headerdiv" id="hi2">
+                    <abbr class="headertext" id="ht2" title="Vyhľadávanie"><img src="styles/icons/search_world.svg" class="headerimgs"></abbr>
+                </div></a>
                 <a onclick="langbox()" class="aimg"><div class="headerdiv" id="hi1">
                     <abbr class="headertext" id="ht1" title="Zmeniť jazyk"><img src="styles/icons/language.svg" class="headerimgs"></abbr>
                     <div id="hi1style" style="display:inline;"></div>
@@ -87,7 +90,7 @@ to-dos:
                 </div></a>
                 <a <?php if (isset($_SESSION["cd"])) {echo "onclick='userbox()'";} else {echo "href='login'";};?> class="aimg"><div class="headerdiv" id="hi2">
                     <abbr class="headertext" id="ht3" style="text-decoration: none; border-bottom: none;" title="<?php if (isset($_SESSION["cd"])) {echo "Používateľ";} else {echo "Prihláste sa/Registrujte sa";};?>"><img src="styles/icons/account.svg" class="headerimgs"></abbr>
-                    <span class="headername">
+                    <span id="headername">
                         <?php
                             $servername = "localhost";
                             $username = "root";

@@ -1,0 +1,107 @@
+body {
+    color: white;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+#hotelsite {
+    min-height: 110vh;
+}
+
+.hotelname {
+    font-size: 6vh;
+    margin: 6vh 0 0 18vw;
+}
+
+.hotellocation {
+    font-size: 2.5vh;
+    margin: 1vh 0 0 18vw;
+}
+
+.reservbtn {
+    background-color: #27f695;
+    color: black;
+    font-weight: bold;
+    border: 3px solid #27f695;
+    border-radius: 20px;
+    padding: 1.2vh 2vh;
+    margin: 2vh 1.2vw;
+    position: absolute;
+    right: 6.5vw;
+    font-size: 2vh;
+    cursor: pointer;
+    width: 9vw;
+}
+
+.reservbtn:hover{
+    background-color: black;
+    color: #27f695;
+}
+
+.hotelicon {
+    height: 5vh;
+    margin: 2vh 0 2vh 0.5vw;
+}
+
+.hotelicons {
+    position: absolute;
+    right: 18vw;
+    top: 19vh;
+    cursor: pointer;
+}
+
+.hotelnav {
+    margin-top: 3vh;
+}
+
+.hotelnav {
+    text-align: center;
+    margin: 4.5vh 0;
+}
+
+.hotelbtn {
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 20px;
+    padding: 0.75vh 2vh;
+    margin: 0.5vh;
+    font-size: 2vh;
+    cursor: pointer;
+    width: 9vw;
+}
+
+.hotelbtn:hover {
+    background-color: #27f695;
+    color: black;
+}
+
+.hotelimg {
+    width: 25vw;
+    height: 20vw;
+    object-fit: cover;
+    margin: 1vh 0 0 18vw;
+    position: static;
+}
+
+.hotelinfo {
+    margin: -41vw 0 0 45vw;
+    width: 30vw;
+    line-height: 1.75;
+}
+
+.facility {
+    text-align: center;
+    display:inline-block;
+    width: 6.5vw;
+    word-wrap: break-word;
+    white-space: normal;
+    line-height: normal;
+    vertical-align: top;
+}
+
+.facilityimg {
+    height: 1.8vw;
+    margin: 1.2vh 0;
+}

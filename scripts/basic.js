@@ -22,11 +22,10 @@ function userbox() {
     }
 }
 
-
-if (Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, document.body.offsetHeight, document.documentElement.offsetHeight, document.body.clientHeight, document.documentElement.clientHeight) > window.innerHeight) {
-    document.querySelector("#headername").style = "margin: 0 0 0.65vh -0.1vw;"
+if (document.documentElement.scrollHeight > window.innerHeight) {
+    document.querySelector("#headername").style.setProperty("margin", "0 0 0.65vh -0.1vw", "important");
 } else {
-    document.querySelector("#headername").style = "margin: 0 0 1.6vh -0.1vw;"
+    document.querySelector("#headername").style.setProperty("margin", "0 0 0.65vh -0.1vw", "important");
 }
 
 var plchldr = document.querySelector("#place")
@@ -50,4 +49,3 @@ if (plchldr && plchldr.value === "") {
         document.querySelector('#place').placeholder = placeholder
     }, 500);
 }
-

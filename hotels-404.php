@@ -15,6 +15,35 @@ if (isset($_SESSION["cd"])) {
         session_destroy();
     };
 };
+
+$sql_url = "SELECT * FROM hotels_info WHERE url LIKE '%" . str_replace('/accomio/', '', $_SERVER['REQUEST_URI']) . "%'";
+$s_url = $conn->query($sql_url);
+if ($s_url->num_rows == 0) { // 404
+    echo <<<TEXT
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                var hotelsite = document.querySelector("#hotelsite");
+                if (hotelsite) {
+                    hotelsite.innerHTML = `<img src="styles/icons/lost.svg" style="width: 20vh; height: 20vh; position: absolute; top: 30vh; left: 50%; transform: translate(-50%, -50%);">
+                                            <div class="welcometext" style="padding-top: 30vh;">Po ceste ste sa asi stratili...</div>
+                                            <div style="color:white;text-align:center;font-family:'Roboto', sans-serif; font-weight: 400; font-style: normal;font-size: 3vh; padding-top: 2vh;">Stránka, ktorú hľadáte, neexistuje. Skúste skontrolovať URL adresu.<br><br><i>ERROR 404</i></div>`
+                }
+            });
+        </script>
+        TEXT;      
+} else { // hotel
+    $htl = $s_url->fetch_assoc();
+    $htl_name = $htl["name"];
+    $htl_location = $htl["location"];
+    $htl_country = $htl["country"];
+    $htl_map = $htl["map"];
+    $htl_price = $htl["price"]; // !
+    $htl_rating = $htl["rating"]; // !
+    $htl_url = $htl["url"];
+    $htl_description = $htl["description"];
+    $htl_facility = $htl["facility"];
+    $htl_contact = $htl["contact"];
+};
 ?>
 <!DOCTYPE html>
 <!--
@@ -24,15 +53,19 @@ to-dos:
 <html lang="sk"> <!-- after translation edit -->
     <head>
         <meta charset="UTF-8">
-        <title>accomio | Hotely, penzióny a omnoho viac</title>
+        <title>accomio | Hotely, penzióny a omnoho viac</title> <!---->
         <link rel="icon" type="image/x-icon" href="styles/icons/icon.ico">
         <link rel='stylesheet' href='styles/basic.css'>
+        <link rel='stylesheet' href='styles/hotels.css'>
         <script src='scripts/basic.js'></script>
     </head>
     <body>
     <header>
             <div class="title" onclick="window.location.href ='/accomio'">accomio</div>
             <nav class="headerbtns">
+                <a href="search" class="aimg"><div class="headerdiv" id="hi2">
+                    <abbr class="headertext" id="ht2" title="Vyhľadávanie"><img src="styles/icons/search_world.svg" class="headerimgs"></abbr>
+                </div></a>    
                 <a onclick="langbox()" class="aimg"><div class="headerdiv" id="hi1">
                     <abbr class="headertext" id="ht1" title="Zmeniť jazyk"><img src="styles/icons/language.svg" class="headerimgs"></abbr>
                     <div id="hi1style" style="display:inline;"></div>
@@ -42,7 +75,7 @@ to-dos:
                 </div></a>
                 <a <?php if (isset($_SESSION["cd"])) {echo "onclick='userbox()'";} else {echo "href='login'";};?> class="aimg"><div class="headerdiv" id="hi2">
                     <abbr class="headertext" id="ht3" style="text-decoration: none; border-bottom: none;" title="<?php if (isset($_SESSION["cd"])) {echo "Používateľ";} else {echo "Prihláste sa/Registrujte sa";};?>"><img src="styles/icons/account.svg" class="headerimgs"></abbr>
-                    <span class="headername">
+                    <span id="headername">
                         <?php
                             $servername = "localhost";
                             $username = "root";
@@ -71,9 +104,31 @@ to-dos:
                 <button class="userbtn" onclick="window.location.href = 'scripts/logout.php'">Odhlásiť sa</button>
             </div>
         </header>
-        <img src="styles/icons/lost.svg" style="width: 20vh; height: 20vh; position: absolute; top: 30vh; left: 50%; transform: translate(-50%, -50%);">
-        <div class="welcometext" style="padding-top: 30vh;">Po ceste ste sa asi stratili...</div>
-        <div style="color:white;text-align:center;font-family: 'Roboto', sans-serif; font-weight: 400; font-style: normal; font-size: 3vh; padding-top: 2vh;">Stránka, ktorú hľadáte, neexistuje. Skúste skontrolovať URL adresu.<br><br><i>ERROR 404</i></div>
+
+        <div id="hotelsite">
+            <div class="hotelname"><?php echo $htl_name;?></div>
+            <div class="hotellocation"><?php echo $htl_location;?>, <?php echo $htl_country;?></div>
+            <div class="hotelicons">
+                <button class="reservbtn">Rezervovať</button>  
+                <abbr style="text-decoration:none;" title="Kontaktovať"><a href="mailto:<?php echo $htl_contact;?>" onclick="navigator.clipboard.writeText('<?php echo $htl_contact;?>')"><img class="hotelicon" src="styles/icons/mail.svg"></a></abbr>
+                <abbr style="text-decoration:none;" title="Zdielať"><a onclick="navigator.clipboard.writeText(window.location.href)"><img class="hotelicon" src="styles/icons/share.svg"></a></abbr>
+            </div>
+            <div class="hotelnav">
+                <button class="hotelbtn" style="background-color:#27f695;">Info</button>
+                <button class="hotelbtn">Recenzie</button>
+                <button class="hotelbtn">Fotky</button>
+                <button class="hotelbtn">Obsadenosť</button>  
+            </div>
+            <img class="hotelimg" src="styles/hotels/<?php echo $htl_url;?>-1.png"><br>
+            <?php echo $htl_map;?>
+            <div class="hotelinfo">
+                <div class="hoteldesciption"><?php echo $htl_description;?></div><br>
+                <div class="hotelfacility">Vybavenie: <br> <?php echo $htl_facility;?></div><br>
+                <div class="hotelprice">Cena: <?php echo $htl_price;?>€</div>
+                <div class="hotelrating">Hodnotenie: <?php echo $htl_rating;?>★</div>
+            </div>
+        </div>
+
         <div id="footer">
             <div class="footer-c1">
                 <div class="title" style="font-size: 4vh;">accomio</div>
