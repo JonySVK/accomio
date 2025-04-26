@@ -109,6 +109,20 @@ if (isset($_SESSION["cd"])) {
         $listnum = 0;
         $htlslst = '';
         while($result = $s_htls->fetch_assoc()) { 
+            $sql_review = "SELECT * FROM hotels_reviews WHERE hotels_id = '" . $result['hotels_id'] . "'";
+            $s_review = $conn->query($sql_review);
+            $a = 0;
+            $b = 0;
+            if ($s_review->num_rows == 0) {
+                $htl_rating = 0;
+            } else {
+                while ($review = $s_review->fetch_assoc()) {
+                    $a += $review["rating"];
+                    $b += 1;
+                };
+                $htl_rating = round($a / $b, 1);
+            };
+
                         if ($listnum != 3) {
                             $listnum += 1;
                         } else {
@@ -119,7 +133,7 @@ if (isset($_SESSION["cd"])) {
                             location: "' . $result['location'] . '",
                             country: "' . $result['country'] . '",
                             price: ' . $result['price'] . ',
-                            rating: ' . $result['rating'] . ',
+                            rating: ' . $htl_rating . ',
                             list_num:' . $listnum . ',
                             url: "' . $result['url'] . '"
                         },';
@@ -128,7 +142,7 @@ if (isset($_SESSION["cd"])) {
                                 document.addEventListener("DOMContentLoaded", () => {
                                 var htlslst = document.querySelector("#hotelslist")
                                 if (htlslst) {
-                                    var hotels = [' . $htlslst . ']
+                                    var hotels = [' . rtrim($htlslst, ",") . ']
                                     hotels.forEach(hotel => {
                                         var hotelDiv = document.createElement("div")
                                         hotelDiv.className = `hotellist-c${hotel.list_num}`
@@ -151,6 +165,20 @@ if (isset($_SESSION["cd"])) {
         $listnum = 0;
         $htlslst = '';
         while($result = $selected->fetch_assoc()) {
+            $sql_review = "SELECT * FROM hotels_reviews WHERE hotels_id = '" . $result['hotels_id'] . "'";
+            $s_review = $conn->query($sql_review);
+            $a = 0;
+            $b = 0;
+            if ($s_review->num_rows == 0) {
+                $htl_rating = 0;
+            } else {
+                while ($review = $s_review->fetch_assoc()) {
+                    $a += $review["rating"];
+                    $b += 1;
+                };
+                $htl_rating = round($a / $b, 1);
+            };
+
                 if ($listnum != 3) {
                     $listnum += 1;
                 } else {
@@ -161,8 +189,8 @@ if (isset($_SESSION["cd"])) {
                     location: "' . $result['location'] . '",
                     country: "' . $result['country'] . '",
                     price: ' . $result['price'] . ',
-                    rating: ' . $result['rating'] . ',
-                    img: "' . $result['img'] . '",
+                    rating: ' . $htl_rating . ',
+                    img: "' . $result['url'] . '",
                     list_num:' . $listnum . ',
                     url: "' . $result['url'] . '"
                 },';
@@ -176,7 +204,7 @@ if (isset($_SESSION["cd"])) {
                                 var hotelDiv = document.createElement("div")
                                 hotelDiv.className = `hotellist-c${hotel.list_num}`
                                 hotelDiv.onclick = function () {document.location.href = `${hotel.url}`}
-                                hotelDiv.innerHTML = `<img src="${hotel.img}" class="hotellist-img"><span class="hotellist-name">${hotel.name}</span><abbr style="text-decoration:none" title="${hotel.country}"><span class="hotellist-location">${hotel.location}</span></abbr><span class="hotellist-price">${hotel.price}€</span><span class="hotellist-rating">${hotel.rating}★</span>`
+                                hotelDiv.innerHTML = `<img src="styles/hotels/${hotel.url}.png" class="hotellist-img"><span class="hotellist-name">${hotel.name}</span><abbr style="text-decoration:none" title="${hotel.country}"><span class="hotellist-location">${hotel.location}</span></abbr><span class="hotellist-price">${hotel.price}€</span><span class="hotellist-rating">${hotel.rating}★</span>`
                                 htlslst.appendChild(hotelDiv)
                             })
                         } 

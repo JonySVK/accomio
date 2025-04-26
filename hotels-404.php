@@ -19,6 +19,8 @@ if (isset($_SESSION["cd"])) {
 $sql_url = "SELECT * FROM hotels_info WHERE url LIKE '%" . str_replace('/accomio/', '', $_SERVER['REQUEST_URI']) . "%'";
 $s_url = $conn->query($sql_url);
 if ($s_url->num_rows == 0) { // 404
+    http_response_code(404);
+    header("HTTP/1.1 404 Not Found");
     echo <<<TEXT
         <script>
             document.addEventListener("DOMContentLoaded", () => {
@@ -33,16 +35,30 @@ if ($s_url->num_rows == 0) { // 404
         TEXT;      
 } else { // hotel
     $htl = $s_url->fetch_assoc();
+    $htl_id = $htl["hotels_id"];
     $htl_name = $htl["name"];
     $htl_location = $htl["location"];
     $htl_country = $htl["country"];
     $htl_map = $htl["map"];
     $htl_price = $htl["price"]; // !
-    $htl_rating = $htl["rating"]; // !
     $htl_url = $htl["url"];
     $htl_description = $htl["description"];
     $htl_facility = $htl["facility"];
     $htl_contact = $htl["contact"];
+
+    $sql_review = "SELECT * FROM hotels_reviews WHERE hotels_id = '" . $htl_id . "'";
+    $s_review = $conn->query($sql_review);
+    $a = 0;
+    $b = 0;
+    if ($s_review->num_rows == 0) {
+        $htl_rating = 0;
+    } else {
+        while ($review = $s_review->fetch_assoc()) {
+            $a += $review["rating"];
+            $b += 1;
+        };
+        $htl_rating = round($a / $b, 1);
+    };
 };
 ?>
 <!DOCTYPE html>
@@ -53,7 +69,7 @@ to-dos:
 <html lang="sk"> <!-- after translation edit -->
     <head>
         <meta charset="UTF-8">
-        <title>accomio | Hotely, penzióny a omnoho viac</title> <!---->
+        <title><?php if(isset($htl_name)) {echo $htl_name . " | ";} ?>accomio | Hotely, penzióny a omnoho viac</title> <!---->
         <link rel="icon" type="image/x-icon" href="styles/icons/icon.ico">
         <link rel='stylesheet' href='styles/basic.css'>
         <link rel='stylesheet' href='styles/hotels.css'>
@@ -113,19 +129,36 @@ to-dos:
                 <abbr style="text-decoration:none;" title="Kontaktovať"><a href="mailto:<?php echo $htl_contact;?>" onclick="navigator.clipboard.writeText('<?php echo $htl_contact;?>')"><img class="hotelicon" src="styles/icons/mail.svg"></a></abbr>
                 <abbr style="text-decoration:none;" title="Zdielať"><a onclick="navigator.clipboard.writeText(window.location.href)"><img class="hotelicon" src="styles/icons/share.svg"></a></abbr>
             </div>
-            <div class="hotelnav">
-                <button class="hotelbtn" style="background-color:#27f695;">Info</button>
-                <button class="hotelbtn">Recenzie</button>
-                <button class="hotelbtn">Fotky</button>
-                <button class="hotelbtn">Obsadenosť</button>  
+            <div class="space"></div>
+            <div class="left">
+                <img class="hotelimg" src="styles/hotels/<?php echo $htl_url;?>.png"><br>
+                <?php echo $htl_map;?>
             </div>
-            <img class="hotelimg" src="styles/hotels/<?php echo $htl_url;?>-1.png"><br>
-            <?php echo $htl_map;?>
-            <div class="hotelinfo">
+            <div class="right">
                 <div class="hoteldesciption"><?php echo $htl_description;?></div><br>
                 <div class="hotelfacility">Vybavenie: <br> <?php echo $htl_facility;?></div><br>
                 <div class="hotelprice">Cena: <?php echo $htl_price;?>€</div>
-                <div class="hotelrating">Hodnotenie: <?php echo $htl_rating;?>★</div>
+                <hr>
+                <div class="hotelreview">
+                    <?php 
+                    $sql_review = "SELECT * FROM hotels_reviews WHERE hotels_id = '" . $htl_id . "'";
+                    $s_review = $conn->query($sql_review);
+                    ?>
+                    <div class="reviewintro"><b>Recenzie</b><div class="avg"><?php echo $htl_rating;?>★</div><br>Počet recenzií: <?php echo $s_review->num_rows;?></div>
+                    <?php
+                        if (!$s_review->num_rows == 0) {
+                            while ($review = $s_review->fetch_assoc()) {
+                                if ($review["review"] == "") {
+                                    continue;
+                                }
+                                echo "<div class='review'>
+                                        <div class='reviewname'>" . $review["name"] . "</div>
+                                        <div class='reviewrating'>" . $review['rating'] . "★</div>
+                                        <div class='reviewtext'>" . $review["review"] . "</div>
+                                        </div>";
+                            }
+                        }
+                    ?>
             </div>
         </div>
 
