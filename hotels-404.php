@@ -16,7 +16,9 @@ if (isset($_SESSION["cd"])) {
     };
 };
 
-$sql_url = "SELECT * FROM hotels_info WHERE url LIKE '%" . str_replace('/accomio/', '', $_SERVER['REQUEST_URI']) . "%'";
+$url = explode('?', $_SERVER['REQUEST_URI']);
+
+$sql_url = "SELECT * FROM hotels_info WHERE url LIKE '%" . str_replace('/accomio/', '', $url[0]) . "%'";
 $s_url = $conn->query($sql_url);
 if ($s_url->num_rows == 0) { // 404
     http_response_code(404);
@@ -40,11 +42,30 @@ if ($s_url->num_rows == 0) { // 404
     $htl_location = $htl["location"];
     $htl_country = $htl["country"];
     $htl_map = $htl["map"];
-    $htl_price = $htl["price"]; // !
     $htl_url = $htl["url"];
     $htl_description = $htl["description"];
     $htl_facility = $htl["facility"];
     $htl_contact = $htl["contact"];
+
+    if (isset($url[1])) {
+        parse_str($url[1], $get);
+
+        $sql_rooms = "SELECT * FROM hotels_rooms WHERE rooms_id = '" . $get['room'] . "'";
+        $s_rooms = $conn->query($sql_rooms);
+        $room = $s_rooms->fetch_assoc();
+
+        $sql_ht = "SELECT * FROM hotels_info WHERE hotels_id = '" . $room['hotels_id'] . "'";
+        $s_ht = $conn->query($sql_ht);
+        $ht = $s_ht->fetch_assoc();
+
+        $date_from = new DateTime($get['datefrom']);
+        $date_to = new DateTime($get['dateto']);
+        $nights = $date_from->diff($date_to)->days;
+
+        $htl_price = ((int)$room['room_price'] * (int)$get['adults'] * (int)$nights) + ((int)$room['room_price'] * (int)$get['kids'] * (float)$ht['kids_price'] * (int)$nights);
+    } else {
+        $htl_price = $htl["price"];
+    };
 
     $sql_review = "SELECT * FROM hotels_reviews WHERE hotels_id = '" . $htl_id . "'";
     $s_review = $conn->query($sql_review);
@@ -76,6 +97,7 @@ to-dos:
         <script src='scripts/basic.js'></script>
     </head>
     <body>
+    <div id="copy"></div>
     <header>
             <div class="title" onclick="window.location.href ='/accomio'">accomio</div>
             <nav class="headerbtns">
@@ -125,7 +147,7 @@ to-dos:
             <div class="hotelname"><?php echo $htl_name;?></div>
             <div class="hotellocation"><?php echo $htl_location;?>, <?php echo $htl_country;?></div>
             <div class="hotelicons">
-                <button class="reservbtn">Rezervovať</button>  
+                <button class="reservbtn" onclick="window.location.href = '<?php if (isset($url[1])) {echo 'reservation?hotel=' . $htl_id . '&datefrom=' . $get['datefrom'] . '&dateto=' . $get['dateto'] . '&adults=' . $get['adults'] . '&kids=' . $get['kids'] . '&room=' . $get['room'];} else {echo 'search-hotel?htl=' . $htl_name;} ?>'">Rezervovať</button>  
                 <abbr style="text-decoration:none;" title="Kontaktovať"><a href="mailto:<?php echo $htl_contact;?>" onclick="navigator.clipboard.writeText('<?php echo $htl_contact;?>')"><img class="hotelicon" src="styles/icons/mail.svg"></a></abbr>
                 <abbr style="text-decoration:none;" title="Zdielať"><a onclick="navigator.clipboard.writeText(window.location.href)"><img class="hotelicon" src="styles/icons/share.svg"></a></abbr>
             </div>
@@ -137,7 +159,7 @@ to-dos:
             <div class="right">
                 <div class="hoteldesciption"><?php echo $htl_description;?></div><br>
                 <div class="hotelfacility">Vybavenie: <br> <?php echo $htl_facility;?></div><br>
-                <div class="hotelprice">Cena: <?php echo $htl_price;?>€</div>
+                <div class="hotelprice">Cena: <?php if (isset($url[1])) {echo "<abbr title='Cena za počet nocí: " . $nights . " a počet osôb: " . $get["adults"] . " + " . $get["kids"] . "'>" . $htl_price . "</abbr>";} else {echo "<abbr title='Cena za počet nocí: 1 a počet osôb: 1 + 0'>" . $htl_price . "</abbr>";}?>€</div>
                 <hr>
                 <div class="hotelreview">
                     <?php 

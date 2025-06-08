@@ -27,6 +27,10 @@ $selected = $conn->query($sql);
 $listnum = 0;
 $htlslst = '';
 while($result = $selected->fetch_assoc()) {
+    $sql_rooms = "SELECT * FROM hotels_rooms WHERE hotels_id = '" . $result['hotels_id'] . "' ORDER BY room_price ASC LIMIT 1";
+    $s_rooms = $conn->query($sql_rooms);
+    $htl_price = $s_rooms->fetch_assoc()["room_price"];
+    
     $sql_review = "SELECT * FROM hotels_reviews WHERE hotels_id = '" . $result['hotels_id'] . "'";
     $s_review = $conn->query($sql_review);
     $a = 0;
@@ -50,7 +54,7 @@ while($result = $selected->fetch_assoc()) {
         name: "' . $result['name'] . '",
         location: "' . $result['location'] . '",
         country: "' . $result['country'] . '",
-        price: ' . $result['price'] . ',
+        price: ' . $htl_price . ',
         rating: ' . $htl_rating . ',
         list_num:' . $listnum . ',
         url: "' . $result['url'] . '"
@@ -89,6 +93,7 @@ to-dos:
         <script src='scripts/basic.js'></script>
     </head>
     <body>
+    <div id="copy"></div>
     <header>
             <div class="title" onclick="window.location.href ='/accomio'">accomio</div>
             <nav class="headerbtns">

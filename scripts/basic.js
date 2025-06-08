@@ -49,3 +49,12 @@ if (plchldr && plchldr.value === "") {
         document.querySelector('#place').placeholder = placeholder
     }, 500);
 }
+
+function copy() {
+    var copyText = document.querySelector("#copy").innerHTML = "Obsah bol skopírovaný do schránky"
+    var copyText = document.querySelector("#copy").style.setProperty("visibility", "visible", "important");
+    setTimeout(() => {
+        var copyText = document.querySelector("#copy").innerHTML = ""
+        var copyText = document.querySelector("#copy").style.setProperty("visibility", "hidden", "important");  
+    }, 2000)
+}

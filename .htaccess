@@ -1,20 +1,23 @@
 RewriteEngine On
-RewriteRule ^search$ search.php [L]
-RewriteRule ^help$ help.php [L]
-RewriteRule ^terms$ terms.php [L]
-RewriteRule ^privacy$ privacy.php [L]
-RewriteRule ^about$ about.php [L]
-RewriteRule ^contact$ contact.php [L]
-RewriteRule ^partners$ partners.php [L]
+RewriteRule ^search$ search.php [QSA,L]
+RewriteRule ^search-hotel$ search-hotel.php [QSA,L]
+RewriteRule ^help$ help.php [QSA,L]
+RewriteRule ^terms$ terms.php [QSA,L]
+RewriteRule ^privacy$ privacy.php [QSA,L]
+RewriteRule ^about$ about.php [QSA,L]
+RewriteRule ^contact$ contact.php [QSA,L]
+RewriteRule ^partners$ partners.php [QSA,L]
 
-RewriteRule ^login$ login.php [L]
-RewriteRule ^user$ user.php [L]
-RewriteRule ^user/personal-data$ user.php [L]
-RewriteRule ^user/bookings-history$ user.php [L]
+RewriteRule ^reservation$ reservation.php [QSA,L]
 
-RewriteRule ^scripts$ 404.php [L]
-RewriteRule ^styles$ 404.php [L]
-RewriteRule ^styles/icons$ 404.php [L]
-RewriteRule ^styles/languages$ 404.php [L]
+RewriteRule ^login$ login.php [QSA,L]
+RewriteRule ^user$ user.php [QSA,L]
+RewriteRule ^user/personal-data$ user.php [QSA,L]
+RewriteRule ^user/bookings-history$ user.php [QSA,L]
+
+RewriteRule ^scripts$ 404.php [QSA,L]
+RewriteRule ^styles$ 404.php [QSA,L]
+RewriteRule ^styles/icons$ 404.php [QSA,L]
+RewriteRule ^styles/languages$ 404.php [QSA,L]
 
 ErrorDocument 404 /accomio/hotels-404.php

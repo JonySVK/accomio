@@ -23,7 +23,21 @@ if (isset($_POST["bh"])) {
     $ci = $s_ci->fetch_assoc();
     $sql_bh = "SELECT * FROM bookings WHERE customers_id = '" . $ci["customers_id"]  . "'";
     $s_bh = $conn->query($sql_bh);
-    $bh = $s_bh->fetch_assoc();
+    $table = "";
+    while ($bh = $s_bh->fetch_assoc()) {
+        $sql_h = "SELECT * FROM hotels_info WHERE hotels_id = '" . $bh["hotels_id"] . "'";
+        $s_h = $conn->query($sql_h);
+        $h = $s_h->fetch_assoc();
+        $table .= '<tr><td><a style="text-decoration:underline;cursor: pointer;color:white;" href="' . $h["url"] . '">' . (string)$h["name"] . '</a></td><td>' . (new DateTime($bh["date_from"]))->format("d.m.Y") . ' - ' . (new DateTime($bh["date_to"]))->format("d.m.Y") . '</td><td>' . (string)$bh["adults"] . ' + ' . (string)$bh["kids"] . '</td><td>' . (string)$bh["price"] . ' €</td><td><a style="text-decoration:underline;cursor: pointer;" onclick="alert(\'Rezerváciu nie je možné vystornovať online. Kontaktuje hotel, v ktorom je rezervácia vytvorená. Pamätajte však, že budete musieť zaplatiť storno poplatok.\')">STORNO REZERVÁCIE</a></td></tr>';
+    }
+    echo '<script>
+            document.addEventListener("DOMContentLoaded", () => {
+                var usersite = document.querySelector("#usersite");
+                if (usersite) {
+                    usersite.innerHTML = `<table class="bookings-table"><tr><th>Názov hotela</th><th>Dátum</th><th><abbr title="dospelí + deti">Počet osôb</abbr></th><th>Cena</th><th></th></tr>' . $table . '</table>`;
+                }
+            });
+        </script>';
 } elseif (isset($_POST["cp"])) {
     $site = "cp";
     echo '<script>
@@ -141,6 +155,7 @@ if (isset($_POST["bh"])) {
         <script src='scripts/basic.js'></script>
     </head>
     <body>
+    <div id="copy"></div>
     <header>
             <div class="title" onclick="window.location.href ='/accomio'">accomio</div>
             <nav class="headerbtns">

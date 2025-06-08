@@ -293,6 +293,35 @@ header {
     text-align: center;
 }
 
+.text-heading {
+    font-weight: 800;
+    font-size: 4vh;
+}
+
+.text-title {
+    margin-top: 3vh;
+    margin-bottom: 1vh;
+    font-weight: 600;
+    font-size: 2.8vh;
+}
+
+.text a {
+    color: white;
+}
+
+.text {
+    color: white;
+    font-size: 2vh;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    line-height: 1.5;
+    margin-top: 5vh;
+    margin-bottom: 5vh;
+    width: 64vw;
+    margin: 5vh 18vw;
+}
+
 #footer {
     color: white;
     font-family: "Roboto", sans-serif;
@@ -331,4 +360,18 @@ header {
     width: 10vw;
     margin-left: 5vw;
     display: inline-block;
+}
+
+#copy {
+    color: black;
+    background-color: white;
+    border-radius: 15px;
+    padding: 1vh;
+    position: fixed;
+    top: 2vh;
+    left: 40vw;
+    width: 20vw;
+    text-align: center;
+    z-index: 100;
+    visibility: hidden;
 }

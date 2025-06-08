@@ -155,6 +155,7 @@ if (isset($_SESSION["cd"])) {
         <script src='scripts/basic.js'></script>
     </head>
     <body>
+    <div id="copy"></div>
     <header>
             <div class="title" onclick="window.location.href ='/accomio'">accomio</div>
             <nav class="headerbtns">

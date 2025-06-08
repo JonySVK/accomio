@@ -81,3 +81,20 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
     background-color: #27f695;
     color: black;
 }
+
+table, th, td {
+    width: 64vw;
+    border-collapse: collapse;
+    margin: 2vh 0;
+    color: white;
+    border-collapse: collapse;
+    border: 1px white solid;
+    padding: 15px;
+    text-align: center;
+}
+
+th {
+    font-weight: 900;
+    background-color: #27f695;
+    color: black;
+}
