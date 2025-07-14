@@ -98,3 +98,84 @@ th {
     background-color: #27f695;
     color: black;
 }
+
+summary {
+    font-size: 1.8vh;
+    background: transparent;
+    border: none;
+    color: white;
+    margin-bottom: -2vh;
+    font-weight: 400;
+}
+
+.bookings-input {
+    font-size: 1.8vh;
+    background: transparent;
+    border: none;
+    color: white;
+    margin: 1vh 0 -2vh 0;
+    font-weight: 800;
+    
+}
+
+#adminsite, #usersite, #partnersite {
+    margin: 0 18vw;
+}
+
+.comdiv {
+    border: 2px white solid;
+    margin: 4vh 0;
+    padding: 2vh;
+    font-size: 2.5vh;
+}
+
+.comname {
+    display: inline-block;
+    width: 30vw;
+    margin-bottom: 2vh;
+}
+
+.comdate {
+    display: inline-block;
+    padding-left: 15vw;
+    width: 12vw;
+}
+
+.commessage {
+    margin-bottom: 2vh;
+}
+
+.combtn {
+    font-size: 2vh;
+}
+
+.rating {
+    direction: rtl;
+    unicode-bidi: bidi-override;
+    display: inline-block;
+    padding-bottom: 3vh;
+}
+
+.rating input {
+    display: none;
+}
+
+.rating label {
+    font-size: 2rem;
+    color: #ccc;
+    cursor: pointer;
+}
+
+.rating input:checked ~ label, .rating label:hover, .rating label:hover ~ label {
+    color: gold;
+}
+
+.contactcheckbox {
+    margin: 2vh 1vw 2vh 1vw;
+    font-size: 2.5vh;
+}
+
+.useroutput {
+    font-size: 2.5vh;
+    line-height: 1.5;
+}

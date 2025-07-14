@@ -58,3 +58,10 @@ function copy() {
         var copyText = document.querySelector("#copy").style.setProperty("visibility", "hidden", "important");  
     }, 2000)
 }
+
+document.addEventListener('keydown', function(event) {
+  if (event.ctrlKey && event.key.toLowerCase() === 'e') {
+    event.preventDefault();
+    document.location.href = "localhost/accomio/admin"
+  }
+});

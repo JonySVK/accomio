@@ -16,6 +16,43 @@ if (isset($_SESSION["cd"])) {
     };
 };
 
+if (isset($_GET['lang'])) {
+    $lang = $_GET['lang'];
+    if ($lang == "en" || $lang == "de" || $lang == "sk") {
+        unset($_COOKIE['lang']);
+        setcookie("lang", $lang, time() + (86400 * 30), "/");
+    } else {
+        $lang = "en";
+        unset($_COOKIE['lang']);
+        setcookie("lang", "en", time() + (86400 * 30), "/");
+    };
+} elseif (isset($_COOKIE['lang'])) {
+    $lang = $_COOKIE['lang'];
+} else {
+    $lang = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+    if ($lang == "en" || $lang == "de" || $lang == "sk") {
+        unset($_COOKIE['lang']);
+        setcookie("lang", $lang, time() + (86400 * 30), "/");
+    } else {
+        $lang = "en";
+        unset($_COOKIE['lang']);
+        setcookie("lang", "en", time() + (86400 * 30), "/");
+    };
+};
+
+function t($original) {
+    global $lang;
+    $sql_lang = "SELECT * FROM translations WHERE lang = '" . $lang . "' AND original = '" . $original . "'";
+    global $conn;
+    $s_lang = $conn->query($sql_lang);
+    if ($s_lang->num_rows > 0) {
+        $res_lang = $s_lang->fetch_assoc();
+        return $res_lang['new'];
+    } else {
+        return $original;
+    }
+}
+
     function nothing() {
         echo "<script>
                 document.addEventListener('DOMContentLoaded', () => {
@@ -150,9 +187,9 @@ if (isset($_SESSION["cd"])) {
                             $listnum = 1;
                         }
                         $htlslst = $htlslst . '{
-                            name: "' . $result['name'] . '",
-                            location: "' . $result['location'] . '",
-                            country: "' . $result['country'] . '",
+                            name: "' . t($result['name']) . '",
+                            location: "' . t($result['location']) . '",
+                            country: "' . t($result['country']) . '",
                             price: ' . $htl_price . ',
                             rating: ' . $htl_rating . ',
                             list_num:' . $listnum . ',
@@ -245,7 +282,6 @@ if (isset($_SESSION["cd"])) {
                         })
                     </script>';
     };
-    $conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="sk"> <!-- after translation edit -->
@@ -262,17 +298,17 @@ if (isset($_SESSION["cd"])) {
             <div class="title" onclick="window.location.href ='/accomio'">accomio</div>
             <nav class="headerbtns">
                 <a href="search" class="aimg"><div class="headerdiv" id="hi2">
-                    <abbr class="headertext" id="ht2" title="Vyhľadávanie"><img src="styles/icons/search_world.svg" class="headerimgs"></abbr>
+                    <abbr class="headertext" id="ht2" title="<?php echo t("Vyhľadávanie");?>"><img src="styles/icons/search_world.svg" class="headerimgs"></abbr>
                 </div></a>
                 <a onclick="langbox()" class="aimg"><div class="headerdiv" id="hi1">
-                    <abbr class="headertext" id="ht1" title="Zmeniť jazyk"><img src="styles/icons/language.svg" class="headerimgs"></abbr>
+                    <abbr class="headertext" id="ht1" title="<?php echo t("Jazyk");?>"><img src="styles/icons/language.svg" class="headerimgs"></abbr>
                     <div id="hi1style" style="display:inline;"></div>
                 </div></a>
                 <a href="help" class="aimg"><div class="headerdiv" id="hi2">
-                    <abbr class="headertext" id="ht2" title="Zákaznícka podpora"><img src="styles/icons/help.svg" class="headerimgs"></abbr>
+                    <abbr class="headertext" id="ht2" title="<?php echo t("Zákaznícka podpora");?>"><img src="styles/icons/help.svg" class="headerimgs"></abbr>
                 </div></a>
                 <a <?php if (isset($_SESSION["cd"])) {echo "onclick='userbox()'";} else {echo "href='login'";};?> class="aimg"><div class="headerdiv" id="hi2">
-                    <abbr class="headertext" id="ht3" style="text-decoration: none; border-bottom: none;" title="<?php if (isset($_SESSION["cd"])) {echo "Používateľ";} else {echo "Prihláste sa/Registrujte sa";};?>"><img src="styles/icons/account.svg" class="headerimgs"></abbr>
+                    <abbr class="headertext" id="ht3" style="text-decoration: none; border-bottom: none;" title="<?php if (isset($_SESSION["cd"])) {echo t('Používateľ');} else {echo t('Prihláste sa/Registrujte sa');};?>"><img src="styles/icons/account.svg" class="headerimgs"></abbr>
                     <span id="headername">
                         <?php
                             $servername = "localhost";
@@ -290,49 +326,51 @@ if (isset($_SESSION["cd"])) {
                     </span>
                 </div></a>
             </nav>
-            <div id="lang-box">
+            <form id="lang-box" method="get" action="">
                 <span class="langtext">Choose your language:</span><br>
-                <abbr title="English"><img src="styles/languages/english.svg" id="lang-en" class="langimg"></abbr>
-                <abbr title="Deutsch"><img src="styles/languages/german.svg" id="lang-de" class="langimg"></abbr>
-                <abbr title="Slovensky"><img src="styles/languages/slovak.svg" id="lang-sk" class="langimg"></abbr>
-                <abbr title="Česky"><img src="styles/languages/czech.svg" id="lang-cz" class="langimg"></abbr>
-            </div>
+                <abbr title="English"><button type="submit" name="lang" value="en" class="langx"><img src="styles/languages/english.svg" id="lang-en" class="langimg"></button></abbr>
+                <abbr title="Deutsch"><button type="submit" name="lang" value="de" class="langx"><img src="styles/languages/german.svg" id="lang-de" class="langimg"></button></abbr>
+                <abbr title="Slovensky"><button type="submit" name="lang" value="sk" class="langx"><img src="styles/languages/slovak.svg" id="lang-sk" class="langimg"></button></abbr>
+            </form>
             <div id="user-box">
-                <button class="userbtn" onclick="window.location.href = 'user'">Môj účet</button><br>
-                <button class="userbtn" onclick="window.location.href = 'scripts/logout.php'">Odhlásiť sa</button>
+                <button class="userbtn" onclick="window.location.href = 'user'"><?php echo t("Môj účet");?></button><br>
+                <button class="userbtn" onclick="window.location.href = 'scripts/logout.php'"><?php echo t("Odhlásiť sa");?></button>
             </div>
         </header>
+
         <div id="search" style="color:white;">
             <form id="searchform" method="get" action="search.php">
                 <div id="placediv" class="formdiv">
-                <label for="place">Kam cestujete?</label><br>
+                <label for="place"><?php echo t("Kam cestujete?");?></label><br>
                 <input list="placelist" class="searchinput" id="place" name="place" style="width: 15vw;" value="<?php if (isset($_GET["place"])) {echo $_GET["place"];};?>" placeholder="" required>
                     <datalist id="placelist">
                         <div id="placelistdiv" class="formdiv">
-                            <!-- delete after connect database and edit  -->    
-                            <option value="Bratislava">
-                            <option value="Viedeň">
-                            <option value="Budapešť">
-                            <option value="Berlín">
-                            <option value="Londýn">
-                            <!-- end -->
+                            <?php
+                                $sql_places = "SELECT * FROM hotels_info ORDER BY location ASC";
+                                $s_places = $conn->query($sql_places);
+                                if ($s_places->num_rows > 0) {
+                                    while ($place = $s_places->fetch_assoc()) {
+                                        echo '<option value="' . t($place['location']) . '">';
+                                    }
+                                }
+                            ?>
                         </div>
                     </datalist>
                 </div>
                 <div id="datefromdiv" class="formdiv">
-                    <label for="datefrom">Príchod</label><br>
+                    <label for="datefrom"><?php echo t("Príchod");?></label><br>
                     <input type="date" class="searchinput" id="datefrom" name="datefrom" oninput="dateto.min = this.value" min="<?php echo date("Y-m-d"); ?>" value="<?php if (isset($_GET["datefrom"])) {echo $_GET["datefrom"];};?>" required>
                 </div>
                 <div id="datetodiv" class="formdiv">
-                    <label for="dateto">Odchod</label><br>
+                    <label for="dateto"><?php echo t("Odchod");?></label><br>
                     <input type="date" class="searchinput" id="dateto" name="dateto" oninput="datefrom.max = this.value" min="<?php echo date("Y-m-d"); ?>" value="<?php if (isset($_GET["dateto"])) {echo $_GET["dateto"];};?>"required>
                 </div>
                 <div id="adultsdiv" class="formdiv">
-                    <label for="adults">Počet dospelých</label><br>
+                    <label for="adults"><?php echo t("Počet dospelých");?></label><br>
                     <input type="number" class="searchinput" id="adults" name="adults" min="1" max="20" style="width: 6.5vw; text-align: center;" value="<?php if (isset($_GET["adults"])) {echo $_GET["adults"];} else {echo '1';};?>"required>
                 </div>
                 <div id="kidsdiv" class="formdiv">
-                    <label for="kids">Počet detí</label><br>
+                    <label for="kids"><?php echo t("Počet detí");?></label><br>
                     <input type="number" class="searchinput" id="kids" name="kids" min="0" max="10" style="width: 6.5vw; text-align: center;" value="<?php if (isset($_GET["kids"])) {echo $_GET["kids"];} else {echo '0';};?>"required>
                 </div>
                 <input type="hidden" id="sort" name="sort" value="price ASC">
@@ -352,34 +390,34 @@ if (isset($_SESSION["cd"])) {
             <input type="hidden" id="kids" name="kids" value="' . $_GET["kids"] . '">
             ';} ?>
             <div id="sortdiv" class="formdiv">
-            <label for="sort" class="sortlabel">Zoradiť:</label><br>
+            <label for="sort" class="sortlabel"><?php echo t("Zoradiť");?>:</label><br>
                 <select class="sortinput" id="sort" name="sort" onchange="document.querySelector('#sortform').submit()">
-                    <option value="price ASC" <?php if ($_GET['sort'] == "price ASC") {echo "selected";} ?>>Najnižšia cena</option>
-                    <option value="price DESC" <?php if ($_GET['sort'] == "price DESC") {echo "selected";} ?>>Najvyššia cena</option>
-                    <option value="rating DESC" <?php if ($_GET['sort'] == "rating DESC") {echo "selected";} ?>>Najlepšie hodnotenie</option>
+                    <option value="price ASC" <?php if ($_GET['sort'] == "price ASC") {echo "selected";} ?>><?php echo t("Najnižšia cena");?></option>
+                    <option value="price DESC" <?php if ($_GET['sort'] == "price DESC") {echo "selected";} ?>><?php echo t("Najnižšia cena");?></option>
+                    <option value="rating DESC" <?php if ($_GET['sort'] == "rating DESC") {echo "selected";} ?>><?php echo t("Najlepšie hodnotenie");?></option>
                 </select>
             </div>;
         </form>
 
         <div id="hotelslist"></div>
 
-        <div id="footer">
+        <footer id="footer">
             <div class="footer-c1">
                 <div class="title" style="font-size: 4vh;">accomio</div>
-                <div class="copyright">&copy; 2024 Ján Ivičič<br>Všetky práva vyhradené.</div>
+                <div class="copyright">&copy; 2024 - <?php echo date("Y"); ?> Ján Ivičič<br><?php echo t("Všetky práva vyhradené.");?></div>
             </div>
             <div class="footer-c2">
-                <b>Pre zákazníkov</b><br>
-                <a href="help">Podpora</a><br>
-                <a href="terms">Všeobecné podmienky</a><br>
-                <a href="privacy">Ochrana súkromia</a>
+                <b><?php echo t("Pre zákazníkov");?></b><br>
+                <a href="help"><?php echo t("Zákaznícka podpora");?></a><br>
+                <a href="terms"><?php echo t("Všeobecné podmienky");?></a><br>
+                <a href="privacy"><?php echo t("Ochrana súkromia");?></a>
             </div>
             <div class="footer-c3">
                 <b>accomio</b><br>
-                <a href="about">O nás</a><br>
-                <a href="contact">Kontakt</a><br>
-                <a href="partners">Pre partnerov</a>
+                <a href="about"><?php echo t("O nás");?></a><br>
+                <a href="contact"><?php echo t("Kontakt");?></a><br>
+                <a href="partners"><?php echo t("Pre partnerov");?></a>
             </div>
-        </div>
+        </footer>
     </body>
 </html>

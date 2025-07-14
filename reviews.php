@@ -14,6 +14,9 @@ if (isset($_SESSION["cd"])) {
     if ($s_login->num_rows == 0) {
         session_destroy();
     };
+} else {
+    header("Location: login");
+    exit();
 };
 
 if (isset($_GET['lang'])) {
@@ -52,14 +55,77 @@ function t($original) {
         return $original;
     }
 }
+
+if (!isset($_GET["b"]) || !is_numeric($_GET["b"])) {
+    echo "<script>alert('Niečo sa pokazilo.'); window.location.href = '/accomio/user'</script>";
+    exit();
+}
+
+$sql_booking = "SELECT * FROM bookings WHERE bookings_id = '" . $_GET["b"] . "' AND customers_id = (SELECT customers_id FROM customers WHERE code = '" . $_SESSION["cd"] . "' AND log = '" . $_SESSION["lg"] . "')";
+$s_booking = $conn->query($sql_booking);
+$booking = $s_booking->fetch_assoc();
+if ($s_booking->num_rows == 0) {
+    echo "<script>alert('Niečo sa pokazilo.'); window.location.href = '/accomio/user' </script>";
+}
+
+$sql_reviews = "SELECT * FROM hotels_reviews WHERE bookings_id = '" . $_GET["b"] . "'";
+$s_reviews = $conn->query($sql_reviews);
+$reviews = $s_reviews->fetch_assoc();
+if ($s_reviews->num_rows > 0) {
+echo "<script>alert('Recenziu k tejto rezervácii ste už pridali.'); window.location.href = '/accomio/user'</script>";
+    exit();
+}
+
+$sql_hotel = "SELECT * FROM hotels_info WHERE hotels_id =" . $booking['hotels_id'];
+$s_hotel = $conn->query($sql_hotel);
+$hotel = $s_hotel->fetch_assoc();
+if ($s_hotel->num_rows == 0) {
+    echo "<script>alert('Niečo sa pokazilo.'); window.location.href = '/accomio/user'</script>";
+    exit();
+}
+
+
+
+if(isset($_POST['rating'])) {
+        if ($_POST['name'] == '1') {
+            $name = "SELECT * FROM customers WHERE code = '" . $_SESSION["cd"] . "' AND log = '" . $_SESSION["lg"] . "'";
+            $name = $conn->query($name);
+            $name = $name->fetch_assoc();
+            $name = $name['name'];
+        } else {
+            $name = 'Anonymný hosť';
+        }
+        $sql_review = "INSERT INTO hotels_reviews (reviews_id, bookings_id, hotels_id, rating, review, date, name) VALUES (NULL, '" . $_GET["b"] . "'," . $booking['hotels_id'] . ", '" . $_POST['rating'] . "', '" . $_POST['review'] . "', NOW(), '" . $name . "')";
+        $conn->query($sql_review);
+        if ($conn->affected_rows > 0) {
+            echo "<script>
+            document.addEventListener('DOMContentLoaded', () => {
+                var contactform = document.querySelector('#contactform');
+                if (contactform) {
+                    contactform.innerHTML = `<span style='padding-top:5vh;font-weight:800;'>Vaša recenzia bola úspešne odoslaná!</span>`;
+                }
+            });
+        </script>";
+        } else {
+            echo "<script>
+            document.addEventListener('DOMContentLoaded', () => {
+                var contactform = document.querySelector('#contactform');
+                if (contactform) {
+                    contactform.innerHTML = `<span style='padding-top:5vh;font-weight:800;color:red;'>Pri odosielaní recenzie došlo k chybe. Skúste to prosím neskôr.</span>`;
+                }
+            });
+        </script>";
+        }
+}
 ?>
 <!DOCTYPE html>
 <html lang="sk"> <!-- after translation edit -->
     <head>
         <meta charset="UTF-8">
-        <title>Všeobecné podmienky | accomio | Hotely, penzióny a omnoho viac</title>
+        <title>Pridať recenziu | accomio | Hotely, penzióny a omnoho viac</title>
         <link rel="icon" type="image/x-icon" href="styles/icons/icon.ico">
         <link rel='stylesheet' href='styles/basic.css'>
+        <link rel='stylesheet' href='styles/user.css'>
         <script src='scripts/basic.js'></script>
     </head>
     <body>
@@ -108,26 +174,30 @@ function t($original) {
             </div>
         </header>
 
-        <div class="text">
-            <div class="text-heading">Všeobecné podmienky</div>
-            <div class="text-title">1. PREVÁDZKOVATEĽ</div>
-            <div>Prevádzkovateľom portálu accomio je Bilbo Bublík so sídlom v Grófstve, Stredozem. Kontaktovať je ho možné emailom na <a href="mailto:bilbo@bublik.com">bilbo@bublik.com</a> alebo poštou na adrese Vreckany 1, Hobitov, Grófstvo, Stredozem. Prevádzkovateľ nie je poskytovateľom ubytovacích služieb v ponúkaných hoteloch. Portál accomio ponúka len možnosť vyhľadávania a rezervácie ubytovania v hoteloch, penziónoch a iných ubytovacích zariadeniach. Prevádzkovateľ nezodpovedá za kvalitu služieb poskytovaných jednotlivými ubytovacími zariadeniami.</div>
-            <div class="text-title">2. POSKYTOVATELIA UBYTOVACÍCH SLUŽIEB</div>
-            <div>Poskytovatelia ubytovacích služieb sú jednotlivé hotely ako partneri portálu accomio, ktorý využívajú ako rezervačný nástroj. Sú zodpovední za kvalitu poskytovaných služieb. V prípade sťažností sú hostia oprávnení kontaktovať ich cez kontakty uvedené na tomto portáli. V prípade vážnych sťažností alebo nezrovnalostí, kontaktujte prosím aj náš portál cez kontakty uvedené na našej stránke, aby sme mohli podniknúť náležité opatrenia.</div>
-            <div class="text-title">3. HOSŤ</div>
-            <div>Hosťom sa rozumie každá osoba, ktorá si rezervuje ubytovanie prostredníctvom portálu accomio. Hosť je povinný poskytnúť pravdivé a úplné informácie pri rezervácii ubytovania. V prípade, že hosť poskytne nepravdivé alebo neúplné informácie, prevádzkovateľ si vyhradzuje právo zrušiť rezerváciu.</div>
-            <div class="text-title">4. REZERVÁCIA UBYTOVANIA</div>
-            <div>Rezervácia ubytovania sa uskutočňuje prostredníctvom portálu accomio. Hosť si vyberie požadované ubytovacie zariadenie, termín a počet osôb. Po potvrdení rezervácie hosť obdrží potvrdenie rezervácie na zadaný email. Rezervácia je záväzná pre obe strany. V prípade storna tejto objednávky sa postupuje podľa týchto Podmienok.</div>
-            <div class="text-title">5. POVINNOSTI HOSŤA</div>
-            <div>Hosť je povinný dodržiavať všetky pokyny a pravidlá ubytovacieho zariadenia, v ktorom je ubytovaný. Hosť je zodpovedný za škody spôsobené na majetku ubytovacieho zariadenia počas jeho pobytu. V prípade poškodenia majetku ubytovacieho zariadenia, hosť súhlasí s úhradou vzniknutej škody.</div>
-            <div class="text-title">6. STORNO REZERVÁCIE ZO STRANY HOSŤA</div>
-            <div>Hosť má právo kedykoľvek zrušiť rezerváciu ubytovania. V prípade storna rezervácie v lehote viac ako 90 dní pred plánovaným začiatkom pobytu, storno poplatok je vo výške 20 percent z plánovanej ceny ubytovania. V prípade storna v lehote menej ako 90 a viac ako 30 dní pred plánovaným začiatkom pobytu, storno poplatok je vo výške 50 percent z plánovanej ceny ubytovania. V prípade storna v lehote menej ako 30 dní pred plánovaným začiatkom pobytu, storno poplatok je vo výške 100 percent z plánovanej ceny ubytovania.</div>
-            <div class="text-title">7. STORNO REZERVÁCIE ZO STRANY POSKYTIVATEĽA</div>
-            <div>Poskytovateľ ubytovacích služieb si vyhradzuje právo zrušiť rezerváciu v prípade, že hosť poruší podmienky ubytovania alebo ak sa vyskytnú nepredvídateľné okolnosti, ktoré znemožňujú poskytnutie ubytovania. V takom prípade poskytovateľ ubytovacích služieb informuje hosťa o zrušení rezervácie a vráti mu všetky zaplatené poplatky. V prípade stažností týkajúcich sa tohto bodu Podmienok, kontaktujte nás cez kontakty uvedené na našej stránke.</div>
-            <div class="text-title">8. ZÁVEREČNÉ USTANOVENIA</div>
-            <div>Tieto Všeobecné podmienky sú platné od 14. júla 1789. Prevádzkovateľ si vyhradzuje právo na zmenu týchto Podmienok. O zmene Podmienok bude hosť informovaný prostredníctvom emailu alebo na stránke portálu accomio. Hosť je povinný oboznámiť sa s aktuálnymi Podmienkami pred každou rezerváciou ubytovania. Podmienky platia v každej jurisdikcii na svete.</div>
+        <div class="text" style="text-align: center;font-size: 3.25vh;">
+            <form method="post" action="" class="contactform" id="contactform">
+                <input type="hidden" name="bookings_id" value="<?php echo $_GET["b"];?>" required><br>
+                <span style="">Ako hodnotíte "<?php echo $hotel["name"]; ?>"?</span><br>
+                <div class="rating">
+                    <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
+                    <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+                    <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+                    <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+                    <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+                </div><br>
+                <textarea name="review" class="contactinput" placeholder="Vaše hodnotenie (nepovinné)" style=" width: 20vw;height:18vh;"></textarea><br>
+                <input type="checkbox" name="name" value="1" class="contactcheckbox" style="height:20px;width:20px;;margin: 0 -0.5vw 4vh 0;" checked><label style="font-size: 2.3vh;"> Zobraziť pri recenzii moje meno</label><br>
+                <input type="submit" value="Odoslať" class="contactinput" id="contactsubmit">
+            </form>
         </div>
 
+        <style>
+
+</style>
+
+<form class="rating">
+</form>
+        
         <footer id="footer">
             <div class="footer-c1">
                 <div class="title" style="font-size: 4vh;">accomio</div>

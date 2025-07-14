@@ -14,6 +14,9 @@ RewriteRule ^login$ login.php [QSA,L]
 RewriteRule ^user$ user.php [QSA,L]
 RewriteRule ^user/personal-data$ user.php [QSA,L]
 RewriteRule ^user/bookings-history$ user.php [QSA,L]
+RewriteRule ^reviews$ reviews.php [QSA,L]
+
+RewriteRule ^admin$ admin.php [QSA,L]
 
 RewriteRule ^scripts$ 404.php [QSA,L]
 RewriteRule ^styles$ 404.php [QSA,L]
