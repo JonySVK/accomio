@@ -16,6 +16,26 @@ if (isset($_SESSION["cd"])) {
     };
 };
 
+if (isset($_GET['htl'])) {
+    $sql_name = "SELECT * FROM hotels_info WHERE hotels_id = '" . $_GET['htl'] . "'";
+    $s_name = $conn->query($sql_name);
+    if ($s_name->num_rows > 0) {
+        $result_name = $s_name->fetch_assoc();
+        $name = $result_name['name'];
+    } else {
+        echo '<script>alert("' . t("Niečo sa pokazilo.") . '");</script>';
+    }
+} elseif (isset($_GET['place'])) {
+    $sql_name = "SELECT * FROM hotels_info WHERE name = '" . $_GET['place'] . "'";
+    $s_name = $conn->query($sql_name);
+    if ($s_name->num_rows > 0) {
+        $result_name = $s_name->fetch_assoc();
+        $name = $result_name['name'];
+    } else {
+        echo '<script>alert("' . t("Niečo sa pokazilo.") . '");</script>';
+    }
+}
+
 if (isset($_GET['lang'])) {
     $lang = $_GET['lang'];
     if ($lang == "en" || $lang == "de" || $lang == "sk") {
@@ -57,7 +77,7 @@ function t($original) {
         echo "<script>
                 document.addEventListener('DOMContentLoaded', () => {
                     var htlslst = document.querySelector('#hotelslist');
-                    htlslst.innerHTML = `<div style='font-size:2.5vh;text-align:center;color:red;'><b>V tomto hoteli sa v zvolenom termíne nenašla žiadna voľná izba.</b></div>`;
+                    htlslst.innerHTML = `<div style='font-size:2.5vh;text-align:center;color:red;'><b>" . t('V tomto hoteli sa v zvolenom termíne nenašla žiadna voľná izba.') . "</b></div>`;
                 });
               </script>";
     };
@@ -180,9 +200,9 @@ function t($original) {
                         }
                         $htlslst = $htlslst . '{
                             id: ' . $result['hotels_id'] . ',
-                            name: "' . $result['name'] . '",
-                            location: "' . $result['location'] . '",
-                            country: "' . $result['country'] . '",
+                            name: "' . t($result['name']) . '",
+                            location: "' . t($result['location']) . '",
+                            country: "' . t($result['country']) . '",
                             price: ' . $htl_price . ',
                             rating: ' . $htl_rating . ',
                             list_num:' . $listnum . ',
@@ -206,7 +226,7 @@ function t($original) {
                                     hotels.forEach(hotel => {
                                         var hotelDiv = document.createElement("div")
                                         hotelDiv.onclick = function () {document.location.href = `reservation?hotel=${hotel.id}&datefrom=' . $_GET['datefrom'] . '&dateto=' . $_GET['dateto'] . '&adults=' . $_GET['adults'] . '&kids=' . $_GET['kids'] . '&room=' . $room_id . '`};
-                                        hotelDiv.innerHTML = `<div style="font-size:2.5vh;text-align:center;"><b style="color:green;">Našla sa pre Vás voľná izba!</b><br><br>Hotel: ${hotel.name}<br>Dátum: ' . (new DateTime($_GET["datefrom"]))->format("d.m.Y") . " - " . (new DateTime($_GET["dateto"]))->format("d.m.Y") . '<br>Počet osôb: ' . $_GET["adults"] . " + " . $_GET["kids"] . '<br>Celová cena: ' . $htl_price . '€</div><br><br><button class="res-se-btn">Zarezervujte si ju!</button>`
+                                        hotelDiv.innerHTML = `<div style="font-size:2.5vh;text-align:center;"><b style="color:green;">' . t("Našla sa pre Vás voľná izba!") . '</b><br><br>' . t("Hotel:") . ' ${hotel.name}<br>' . t("Dátum:") . ' ' . (new DateTime($_GET["datefrom"]))->format("d.m.Y") . " - " . (new DateTime($_GET["dateto"]))->format("d.m.Y") . '<br>' . t("Počet osôb:") . ' ' . $_GET["adults"] . " + " . $_GET["kids"] . '<br>' . t("Celková cena:") . ' ' . $htl_price . '€</div><br><br><button class="res-se-btn">' . t("Zarezervujte si ju!") . '</button>`
                                         htlslst.appendChild(hotelDiv)
                                     })
                                 } 
@@ -218,10 +238,10 @@ function t($original) {
     };
 ?>
 <!DOCTYPE html>
-<html lang="sk"> <!-- after translation edit -->
+<html lang="<?php echo $lang; ?>">
     <head>
         <meta charset="UTF-8">
-        <title>Vyhľadávanie | accomio | Hotely, penzióny a omnoho viac</title>
+        <title><?php echo t("Vyhľadávanie") . " | " . t("accomio | Hotely, penzióny a omnoho viac");?></title>
         <link rel="icon" type="image/x-icon" href="styles/icons/icon.ico">
         <link rel='stylesheet' href='styles/basic.css'>
         <link rel='stylesheet' href='styles/hotels.css'>
@@ -276,8 +296,9 @@ function t($original) {
         <div id="search" style="color:white;">
             <form id="searchform" method="get" action="search-hotel.php" style="display: block; text-align: center;font-size: 2.5vh;">
                 <div id="placediv" class="formdiv">
-                <label for="place"><?php echo t("Kam cestujete?");?></label><br>
-                <input list="placelist" class="searchinput" id="place" name="place" style="width: 15vw;text-align: center;" value="<?php if (isset($_GET["place"])) {echo t($_GET["place"]);} elseif (isset($_GET["htl"])) {echo t($_GET["htl"]);};?>" placeholder="" readonly required>
+                    <label for="place"><?php echo t("Kam cestujete?");?></label><br>
+                    <input class="searchinput" id="placexxx" name="placexxx" style="width: 15vw;text-align: center;" value="<?php if (isset($_GET["htl"]) || isset($_GET["place"])) {echo t($name);}?>" placeholder="" disabled required>
+                    <?php if (isset($_GET["htl"])) {echo '<input type="hidden" id="place" name="place" value="' . $name . '">';} elseif (isset($_GET["place"])) {echo '<input type="hidden" id="place" name="place" value="' . $name. '">';}?>
                 </div><br>
                 <div id="datefromdiv" class="formdiv">
                     <label for="datefrom"><?php echo t("Príchod");?></label><br>

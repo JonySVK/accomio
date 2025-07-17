@@ -54,10 +54,10 @@ function t($original) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="sk"> <!-- after translation edit -->
+<html lang="<?php echo $lang; ?>">
     <head>
         <meta charset="UTF-8">
-        <title>Ochrana súkromia | accomio | Hotely, penzióny a omnoho viac</title>
+        <title><?php echo t("Ochrana súkromia") . " | " . t("accomio | Hotely, penzióny a omnoho viac");?></title>
         <link rel="icon" type="image/x-icon" href="styles/icons/icon.ico">
         <link rel='stylesheet' href='styles/basic.css'>
         <script src='scripts/basic.js'></script>
@@ -108,7 +108,7 @@ function t($original) {
             </div>
         </header>
 
-        <div class="text">
+        <?php echo t('<div class="text">
             <div class="text-heading">Ochrana súkromia</div>
             <div class="text-title">1. IDENTIFIKAČNÉ ÚDAJE PREVÁZDKOVATEĽA INFORMAČNÉHO SYSTÉMU</div>
             <div>Prevádzkovateľom portálu accomio je Bilbo Bublík so sídlom Vreckany 1, Hobitov, Grófstvo, Stredozem. Kontaktovať ho môžete poštou alebo emailom na <a href="mailto:bilbo@bublik.com">bilbo@bublik.com</a>.</div>
@@ -120,7 +120,7 @@ function t($original) {
             <div>Prevádzkovateľ prijíma primerané technické a organizačné opatrenia na ochranu osobných údajov pred neoprávneným prístupom, zmenou, zverejnením alebo zničením. Všetky osobné údaje sú spracovávané v súlade s platnými právnymi predpismi o ochrane osobných údajov.</div>
             <div class="text-title">5. ZÁVEREČNÉ USTANOVENIA</div>
             <div>Prevádzkovateľ si vyhradzuje právo na zmenu týchto podmienok ochrany osobných údajov. O všetkých zmenách budú návštevníci a zákazníci informovaní prostredníctvom portálu. Pokračovaním v používaní portálu po zmene týchto podmienok súhlasíte s novými podmienkami.</div>
-        </div>
+        </div>');?>
 
         <footer id="footer">
             <div class="footer-c1">

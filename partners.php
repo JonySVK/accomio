@@ -75,16 +75,16 @@ if (isset($_GET['site']) && $_GET['site'] === "res") {
         if ($bh["date_to"] < date("Y-m-d")) { // past
             $table .= '<tr style="background-color:#000000;"><td>' . $bh["name"] . " " . $bh["surname"] . '</td><td>' . $bh["email"] . ', ' . $bh["telephone"] . '</td><td>' . (new DateTime($bh["date_from"]))->format("d.m.Y") . ' - ' . (new DateTime($bh["date_to"]))->format("d.m.Y") . '</td><td>' . (string)$bh["adults"] . ' + ' . (string)$bh["kids"] . '</td><td>' . (string)$bh["price"] . ' €</td><td></td></tr>';
         } elseif ($bh["date_from"] < date("Y-m-d")) { // present
-            $table .= '<tr style="background-color:white;font-weight:600;"><td>' . $bh["name"] . " " . $bh["surname"] . '</td><td>' . $bh["email"] . ', ' . $bh["telephone"] . '</td><td style="color:red;">' . (new DateTime($bh["date_from"]))->format("d.m.Y") . ' - ' . (new DateTime($bh["date_to"]))->format("d.m.Y") . '</td><td style="color:black;">' . (string)$bh["adults"] . ' + ' . (string)$bh["kids"] . '</td><td style="color:black;">' . (string)$bh["price"] . ' €</td><td style="color:red;">POBYT PRÁVE PREBIEHA</td></tr>';
+            $table .= '<tr style="background-color:white;font-weight:600;"><td>' . $bh["name"] . " " . $bh["surname"] . '</td><td>' . $bh["email"] . ', ' . $bh["telephone"] . '</td><td style="color:red;">' . (new DateTime($bh["date_from"]))->format("d.m.Y") . ' - ' . (new DateTime($bh["date_to"]))->format("d.m.Y") . '</td><td style="color:black;">' . (string)$bh["adults"] . ' + ' . (string)$bh["kids"] . '</td><td style="color:black;">' . (string)$bh["price"] . ' €</td><td style="color:red;">' . t("POBYT PRÁVE PREBIEHA") . '</td></tr>';
         } else { // future
-            $table .= '<tr style="background-color:#404040;font-weight:600;"><td>' . $bh["name"] . " " . $bh["surname"] . '</td><td>' . $bh["email"] . ', ' . $bh["telephone"] . '</td><td>' . (new DateTime($bh["date_from"]))->format("d.m.Y") . ' - ' . (new DateTime($bh["date_to"]))->format("d.m.Y") . '</td><td>' . (string)$bh["adults"] . ' + ' . (string)$bh["kids"] . '</td><td>' . (string)$bh["price"] . ' €</td><td><form method="post" action=""><details><summary onclick="alert(\'Nezabudnite, že je Vašou povinnosťou informvať zákazníka a vrátiť mu všetky zaplatené poplatky.\')" style="text-decoration:underline;cursor: pointer;">STORNO REZERVÁCIE</summary><p><button type="submit" style="text-decoration:underline;cursor: pointer;" class="bookings-input" name="cancel" value="' . (string)$bh["bookings_id"] . '">POTVRDIŤ</button></p></details></form></td></tr>';
+            $table .= '<tr style="background-color:#404040;font-weight:600;"><td>' . $bh["name"] . " " . $bh["surname"] . '</td><td>' . $bh["email"] . ', ' . $bh["telephone"] . '</td><td>' . (new DateTime($bh["date_from"]))->format("d.m.Y") . ' - ' . (new DateTime($bh["date_to"]))->format("d.m.Y") . '</td><td>' . (string)$bh["adults"] . ' + ' . (string)$bh["kids"] . '</td><td>' . (string)$bh["price"] . ' €</td><td><form method="post" action=""><details><summary onclick="alert(\'' . t("Nezabudnite, že je Vašou povinnosťou informvať zákazníka a vrátiť mu všetky zaplatené poplatky.") . '\')" style="text-decoration:underline;cursor: pointer;">' . t("STORNO REZERVÁCIE") . '</summary><p><button type="submit" style="text-decoration:underline;cursor: pointer;" class="bookings-input" name="cancel" value="' . (string)$bh["bookings_id"] . '">' . t("POTVRDIŤ") . '</button></p></details></form></td></tr>';
         };
     }
     echo '<script>
             document.addEventListener("DOMContentLoaded", () => {
                 var partnersite = document.querySelector("#partnersite");
                 if (partnersite) {
-                    partnersite.innerHTML = `<table class="bookings-table"><tr><th>Meno</th><th>Kontakt</th><th>Dátum</th><th><abbr title="dospelí + deti">Počet osôb</abbr></th><th>Cena</th><th></th></tr>' . $table . '</table>`;
+                    partnersite.innerHTML = `<table class="bookings-table"><tr><th>' . t("Meno") . '</th><th>' . t("Kontakt") . '</th><th>Dátum</th><th><abbr title="' . t("dospelí + deti") . '">' . t("Počet osôb") . '</abbr></th><th>' . t("Cena") . '</th><th></th></tr>' . $table . '</table>`;
                 }
             });
         </script>';
@@ -97,7 +97,12 @@ if (isset($_GET['site']) && $_GET['site'] === "res") {
     $s_re = $conn->query($sql_re);
     $table = "";
     while ($re = $s_re->fetch_assoc()) {
-            $table .= '<tr><td>' . (new DateTime($re["date"]))->format("d.m.Y") . '</td><td style="font-weight: 600;">' . $re["rating"] . ' ★</td><td>' . $re["review"] . '</td><td>' . $re["name"] . '</td></tr>';
+        if ($re["name"] == "Anonymný hosť") {
+            $nameee = t("Anonymný hosť");
+        } else {
+            $nameee = $re["name"];
+        };
+            $table .= '<tr><td>' . (new DateTime($re["date"]))->format("d.m.Y") . '</td><td style="font-weight: 600;">' . $re["rating"] . ' ★</td><td>' . $re["review"] . '</td><td>' . $nameee . '</td></tr>';
     }
     $sql_h = "SELECT * FROM hotels_info WHERE hotels_id = '" . $bhi["surname"] . "'";
     $s_h = $conn->query($sql_h);
@@ -106,7 +111,7 @@ if (isset($_GET['site']) && $_GET['site'] === "res") {
             document.addEventListener("DOMContentLoaded", () => {
                 var partnersite = document.querySelector("#partnersite");
                 if (partnersite) {
-                    partnersite.innerHTML = `<div style="text-align:center;font-size:3vh;color:white">Celkové hodnotenie Vášho hotela: <span style="font-weight:600">' . $h["rating"] . ' ★</span></div><table class="bookings-table"><tr><th>Dátum</th><th>Hviezdičky</th><th>Hodnotenie</th><th>Meno</th></tr>' . $table . '</table>`;
+                    partnersite.innerHTML = `<div style="text-align:center;font-size:3vh;color:white">' . t("Priemerné hodnotenie Vášho hotela:") . ' <span style="font-weight:600">' . $h["rating"] . ' ★</span></div><table class="bookings-table"><tr><th>' . t("Dátum") . '</th><th>' . t("Hviezdičky") . '</th><th>' . t("Hodnotenie") . '</th><th>' . t("Meno") . '</th></tr>' . $table . '</table>`;
                 }
             });
         </script>';
@@ -122,16 +127,16 @@ if (isset($_GET['site']) && $_GET['site'] === "res") {
         if ($bh["date_to"] < date("Y-m-d")) { // past
             $table .= '<tr style="background-color:#000000;"><td>' . $bh["name"] . " " . $bh["surname"] . '</td><td>' . $bh["email"] . ', ' . $bh["telephone"] . '</td><td>' . (new DateTime($bh["date_from"]))->format("d.m.Y") . ' - ' . (new DateTime($bh["date_to"]))->format("d.m.Y") . '</td><td>' . (string)$bh["adults"] . ' + ' . (string)$bh["kids"] . '</td><td>' . (string)$bh["price"] . ' €</td><td></td></tr>';
         } elseif ($bh["date_from"] < date("Y-m-d")) { // present
-            $table .= '<tr style="background-color:white;font-weight:600;"><td>' . $bh["name"] . " " . $bh["surname"] . '</td><td>' . $bh["email"] . ', ' . $bh["telephone"] . '</td><td style="color:red;">' . (new DateTime($bh["date_from"]))->format("d.m.Y") . ' - ' . (new DateTime($bh["date_to"]))->format("d.m.Y") . '</td><td style="color:black;">' . (string)$bh["adults"] . ' + ' . (string)$bh["kids"] . '</td><td style="color:black;">' . (string)$bh["price"] . ' €</td><td style="color:red;">POBYT PRÁVE PREBIEHA</td></tr>';
+            $table .= '<tr style="background-color:white;font-weight:600;"><td>' . $bh["name"] . " " . $bh["surname"] . '</td><td>' . $bh["email"] . ', ' . $bh["telephone"] . '</td><td style="color:red;">' . (new DateTime($bh["date_from"]))->format("d.m.Y") . ' - ' . (new DateTime($bh["date_to"]))->format("d.m.Y") . '</td><td style="color:black;">' . (string)$bh["adults"] . ' + ' . (string)$bh["kids"] . '</td><td style="color:black;">' . (string)$bh["price"] . ' €</td><td style="color:red;">' . t("POBYT PRÁVE PREBIEHA") . '</td></tr>';
         } else { // future
-            $table .= '<tr style="background-color:#404040;font-weight:600;"><td>' . $bh["name"] . " " . $bh["surname"] . '</td><td>' . $bh["email"] . ', ' . $bh["telephone"] . '</td><td>' . (new DateTime($bh["date_from"]))->format("d.m.Y") . ' - ' . (new DateTime($bh["date_to"]))->format("d.m.Y") . '</td><td>' . (string)$bh["adults"] . ' + ' . (string)$bh["kids"] . '</td><td>' . (string)$bh["price"] . ' €</td><td><form method="post" action=""><details><summary onclick="alert(\'Nezabudnite, že je Vašou povinnosťou informvať zákazníka a vrátiť mu všetky zaplatené poplatky.\')" style="text-decoration:underline;cursor: pointer;">STORNO REZERVÁCIE</summary><p><button type="submit" style="text-decoration:underline;cursor: pointer;" class="bookings-input" name="cancel" value="' . (string)$bh["bookings_id"] . '">POTVRDIŤ</button></p></details></form></td></tr>';
+            $table .= '<tr style="background-color:#404040;font-weight:600;"><td>' . $bh["name"] . " " . $bh["surname"] . '</td><td>' . $bh["email"] . ', ' . $bh["telephone"] . '</td><td>' . (new DateTime($bh["date_from"]))->format("d.m.Y") . ' - ' . (new DateTime($bh["date_to"]))->format("d.m.Y") . '</td><td>' . (string)$bh["adults"] . ' + ' . (string)$bh["kids"] . '</td><td>' . (string)$bh["price"] . ' €</td><td><form method="post" action=""><details><summary onclick="alert(\'' . t("Nezabudnite, že je Vašou povinnosťou informvať zákazníka a vrátiť mu všetky zaplatené poplatky.") . '\')" style="text-decoration:underline;cursor: pointer;">' . t("STORNO REZERVÁCIE") . '</summary><p><button type="submit" style="text-decoration:underline;cursor: pointer;" class="bookings-input" name="cancel" value="' . (string)$bh["bookings_id"] . '">' . t("POTVRDIŤ") . '</button></p></details></form></td></tr>';
         };
     }
     echo '<script>
             document.addEventListener("DOMContentLoaded", () => {
                 var partnersite = document.querySelector("#partnersite");
                 if (partnersite) {
-                    partnersite.innerHTML = `<table class="bookings-table"><tr><th>Meno</th><th>Kontakt</th><th>Dátum</th><th><abbr title="dospelí + deti">Počet osôb</abbr></th><th>Cena</th><th></th></tr>' . $table . '</table>`;
+                    partnersite.innerHTML = `<table class="bookings-table"><tr><th>' . t("Meno") . '</th><th>' . t("Kontakt") . '</th><th>Dátum</th><th><abbr title="' . t("dospelí + deti") . '">' . t("Počet osôb") . '</abbr></th><th>' . t("Cena") . '</th><th></th></tr>' . $table . '</table>`;
                 }
             });
         </script>';
@@ -150,10 +155,10 @@ if (isset($_POST['cancel'])) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="sk"> <!-- after translation edit -->
+<html lang="<?php echo $lang; ?>">
     <head>
         <meta charset="UTF-8">
-        <title>Pre partnerov | accomio | Hotely, penzióny a omnoho viac</title>
+        <title><?php echo t("Pre partnerov") . " | " . t("accomio | Hotely, penzióny a omnoho viac");?></title>
         <link rel="icon" type="image/x-icon" href="styles/icons/icon.ico">
         <link rel='stylesheet' href='styles/basic.css'>
         <link rel='stylesheet' href='styles/user.css'>
@@ -207,8 +212,8 @@ if (isset($_POST['cancel'])) {
         </header>
         
         <form method="get" class="navbar">
-            <button class="navbtn" type="submit" name="site" value="res" <?php if($site === "res") {echo "style='background-color:#27f695;'";} ?>>Rezervácie</button>
-            <button class="navbtn" type="submit" name="site" value="rev" <?php if($site === "rev") {echo "style='background-color:#27f695;'";} ?>>Recenzie</button>
+            <button class="navbtn" type="submit" name="site" value="res" <?php if($site === "res") {echo "style='background-color:#27f695;'";} ?>><?php echo t("Rezervácie");?></button>
+            <button class="navbtn" type="submit" name="site" value="rev" <?php if($site === "rev") {echo "style='background-color:#27f695;'";} ?>><?php echo t("Recenzie");?></button>
         </form>
 
         <div id="partnersite"></div>

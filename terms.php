@@ -54,10 +54,10 @@ function t($original) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="sk"> <!-- after translation edit -->
+<html lang="<?php echo $lang; ?>">
     <head>
         <meta charset="UTF-8">
-        <title>Všeobecné podmienky | accomio | Hotely, penzióny a omnoho viac</title>
+        <title><?php echo t("Všeobecné podmienky") . " | " . t("accomio | Hotely, penzióny a omnoho viac");?></title>
         <link rel="icon" type="image/x-icon" href="styles/icons/icon.ico">
         <link rel='stylesheet' href='styles/basic.css'>
         <script src='scripts/basic.js'></script>
@@ -108,7 +108,7 @@ function t($original) {
             </div>
         </header>
 
-        <div class="text">
+        <?php echo t('<div class="text">
             <div class="text-heading">Všeobecné podmienky</div>
             <div class="text-title">1. PREVÁDZKOVATEĽ</div>
             <div>Prevádzkovateľom portálu accomio je Bilbo Bublík so sídlom v Grófstve, Stredozem. Kontaktovať je ho možné emailom na <a href="mailto:bilbo@bublik.com">bilbo@bublik.com</a> alebo poštou na adrese Vreckany 1, Hobitov, Grófstvo, Stredozem. Prevádzkovateľ nie je poskytovateľom ubytovacích služieb v ponúkaných hoteloch. Portál accomio ponúka len možnosť vyhľadávania a rezervácie ubytovania v hoteloch, penziónoch a iných ubytovacích zariadeniach. Prevádzkovateľ nezodpovedá za kvalitu služieb poskytovaných jednotlivými ubytovacími zariadeniami.</div>
@@ -126,7 +126,7 @@ function t($original) {
             <div>Poskytovateľ ubytovacích služieb si vyhradzuje právo zrušiť rezerváciu v prípade, že hosť poruší podmienky ubytovania alebo ak sa vyskytnú nepredvídateľné okolnosti, ktoré znemožňujú poskytnutie ubytovania. V takom prípade poskytovateľ ubytovacích služieb informuje hosťa o zrušení rezervácie a vráti mu všetky zaplatené poplatky. V prípade stažností týkajúcich sa tohto bodu Podmienok, kontaktujte nás cez kontakty uvedené na našej stránke.</div>
             <div class="text-title">8. ZÁVEREČNÉ USTANOVENIA</div>
             <div>Tieto Všeobecné podmienky sú platné od 14. júla 1789. Prevádzkovateľ si vyhradzuje právo na zmenu týchto Podmienok. O zmene Podmienok bude hosť informovaný prostredníctvom emailu alebo na stránke portálu accomio. Hosť je povinný oboznámiť sa s aktuálnymi Podmienkami pred každou rezerváciou ubytovania. Podmienky platia v každej jurisdikcii na svete.</div>
-        </div>
+        </div>');?>
 
         <footer id="footer">
             <div class="footer-c1">

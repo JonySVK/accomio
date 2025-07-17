@@ -60,6 +60,15 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
     margin: -6vh 18vw 4vh 18vw;
 }
 
+.forgotpass {
+    position: absolute;
+    margin-top: 35vh;
+    text-decoration: underline;
+    z-index: 0;
+    cursor: pointer;
+    font-weight: 300;
+}
+
 .navbar {
     text-align: center;
     padding: 4vh 0;
@@ -74,7 +83,7 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
     margin: 0.5vh;
     font-size: 2vh;
     cursor: pointer;
-    width: 11vw;
+    min-width: 11vw;
 }
 
 .navbtn:hover {

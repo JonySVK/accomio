@@ -54,7 +54,7 @@ function t($original) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="sk"> <!-- after translation edit -->
+<html lang="<?php echo $lang; ?>">
     <head>
         <meta charset="UTF-8">
         <title><?php echo t("O nás") . " | " . t("accomio | Hotely, penzióny a omnoho viac");?></title>

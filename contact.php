@@ -78,7 +78,7 @@ if(isset($_POST['name'])) {;
 }
 ?>
 <!DOCTYPE html>
-<html lang="sk"> <!-- after translation edit -->
+<html lang="<?php echo $lang; ?>">
     <head>
         <meta charset="UTF-8">
         <title><?php echo t("Kontakt") . " | " . t("accomio | Hotely, penzióny a omnoho viac");?></title>

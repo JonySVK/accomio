@@ -53,17 +53,30 @@ function t($original) {
     }
 }
 
+function tx($original) {
+    global $lang;
+    $sql_lang = "SELECT * FROM translations WHERE new = '" . $original . "'";
+    global $conn;
+    $s_lang = $conn->query($sql_lang);
+    if ($s_lang->num_rows > 0) {
+        $res_lang = $s_lang->fetch_assoc();
+        return $res_lang['original'];
+    } else {
+        return $original;
+    }
+}
+
     function nothing() {
         echo "<script>
                 document.addEventListener('DOMContentLoaded', () => {
                     var htlslst = document.querySelector('#hotelslist');
-                    htlslst.innerHTML = `<div class='nothing'>Nič sa nenašlo</div>`;
+                    htlslst.innerHTML = `<div class='nothing'>" . t("Nič sa nenašlo.") . "</div>`;
                 });
               </script>";
     };
 
     if (isset($_GET["place"])) {
-        $place = (string)$_GET["place"];
+        $place = tx((string)$_GET["place"]);
         $people = ((int)$_GET["adults"]) + ((int)$_GET["kids"]);
         
         // places
@@ -84,7 +97,6 @@ function t($original) {
         $s_rooms = $conn->query($sql);
 
         if ($s_rooms->num_rows == 0) {
-            echo "<script> console.log('2') </script>";
             nothing();
         } else {
         $all_rooms = [];
@@ -139,8 +151,6 @@ function t($original) {
                 $hotels[] = $hotel . "/" . $rooms_id;
             };
         };
-
-        //echo print_r($hotels, true);
 
         $hotels_string = implode(", ", $hotels_ids);
         $sql = "SELECT * FROM hotels_info WHERE hotels_id IN ($hotels_string) ORDER BY " . $_GET['sort'];
@@ -256,9 +266,9 @@ function t($original) {
                     $listnum = 1;
                 }
                 $htlslst = $htlslst . '{
-                    name: "' . $result['name'] . '",
-                    location: "' . $result['location'] . '",
-                    country: "' . $result['country'] . '",
+                    name: "' . t($result['name']) . '",
+                    location: "' . t($result['location']) . '",
+                    country: "' . t($result['country']) . '",
                     price: ' . $htl_price . ',
                     rating: ' . $htl_rating . ',
                     img: "' . $result['url'] . '",
@@ -284,10 +294,10 @@ function t($original) {
     };
 ?>
 <!DOCTYPE html>
-<html lang="sk"> <!-- after translation edit -->
+<html lang="<?php echo $lang; ?>">
     <head>
         <meta charset="UTF-8">
-        <title>Vyhľadávanie | accomio | Hotely, penzióny a omnoho viac</title>
+        <title><?php echo t("Vyhľadávanie") . " | " . t("accomio | Hotely, penzióny a omnoho viac");?></title>
         <link rel="icon" type="image/x-icon" href="styles/icons/icon.ico">
         <link rel='stylesheet' href='styles/basic.css'>
         <script src='scripts/basic.js'></script>
@@ -359,7 +369,20 @@ function t($original) {
                 </div>
                 <div id="datefromdiv" class="formdiv">
                     <label for="datefrom"><?php echo t("Príchod");?></label><br>
-                    <input type="date" class="searchinput" id="datefrom" name="datefrom" oninput="dateto.min = this.value" min="<?php echo date("Y-m-d"); ?>" value="<?php if (isset($_GET["datefrom"])) {echo $_GET["datefrom"];};?>" required>
+                    <input list="placelist" type="date" class="searchinput" id="datefrom" name="datefrom" oninput="dateto.min = this.value" min="<?php echo date("Y-m-d"); ?>" value="<?php if (isset($_GET["datefrom"])) {echo $_GET["datefrom"];};?>" required>
+                    <datalist id="placelist">
+                        <div id="placelistdiv" class="formdiv">
+                            <?php
+                                $sql_places = "SELECT * FROM hotels_info ORDER BY location ASC";
+                                $s_places = $conn->query($sql_places);
+                                if ($s_places->num_rows > 0) {
+                                    while ($place = $s_places->fetch_assoc()) {
+                                        echo '<option value="' . t($place['location']) . '">';
+                                    }
+                                }
+                            ?>
+                        </div>
+                    </datalist>
                 </div>
                 <div id="datetodiv" class="formdiv">
                     <label for="dateto"><?php echo t("Odchod");?></label><br>

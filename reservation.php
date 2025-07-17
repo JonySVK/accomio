@@ -18,8 +18,10 @@ if (isset($_SESSION["cd"])) {
     $user = $s_login->fetch_assoc();
 };
 
-if (isset($_GET['lang'])) {
-    $lang = $_GET['lang'];
+parse_str(explode('?', $_SERVER['REQUEST_URI'])[1], $get);
+
+if (isset($get['lang'])) {
+    $lang = $get['lang'];
     if ($lang == "en" || $lang == "de" || $lang == "sk") {
         unset($_COOKIE['lang']);
         setcookie("lang", $lang, time() + (86400 * 30), "/");
@@ -55,8 +57,6 @@ function t($original) {
     }
 }
 
-parse_str(explode('?', $_SERVER['REQUEST_URI'])[1], $get);
-
 if (isset($get["hotel"]) && isset($get["room"]) && isset($get["datefrom"]) && isset($get["dateto"]) && isset($get["adults"]) && isset($get["kids"])) {
     $sql_htl = "SELECT * FROM hotels_info WHERE hotels_id = '" . $get['hotel'] . "'";
     $s_htl = $conn->query($sql_htl);
@@ -91,38 +91,38 @@ if (isset($get["hotel"]) && isset($get["room"]) && isset($get["datefrom"]) && is
                     var c = document.querySelector(".content");
                     if (c) {
                         c.innerHTML = `<div class="res-div">
-                <div class="recap-title">Rekapitulácia Vašej rezervácie:</div><br>
+                <div class="recap-title">' . t("Rekapitulácia Vašej rezervácie:") . '</div><br>
                 <div class="recap-text">
-                    <b>Hotel:</b> ' . $htl["name"]. '<br>
-                    <b>Dátum:</b> ' . (new DateTime($get["datefrom"]))->format("d.m.Y") . " - " . (new DateTime($get["dateto"]))->format("d.m.Y") . '<br>
-                    <b>Počet osôb:</b> ' . $get["adults"] . " + " . $get["kids"] . '<br>
-                    <b>Typ izby:</b> ' . $room["room_name"] . '<br>
-                    <b>Celková cena:</b> ' . $htl_price . ' €<br><br>
-                    <i>V prípade, ak chcete niečo vo Vašej rezervácií zmeniť, vráťte sa do vyhľadávania a vytvorte rezerváciu nanovo.</i><br><br>
+                    <b>' . t("Hotel:") . '</b> ' . t($htl["name"]) . '<br>
+                    <b>' . t("Dátum:") . '</b> ' . (new DateTime($get["datefrom"]))->format("d.m.Y") . " - " . (new DateTime($get["dateto"]))->format("d.m.Y") . '<br>
+                    <b>' . t("Počet osôb:") . '</b> ' . $get["adults"] . " + " . $get["kids"] . '<br>
+                    <b>' . t("Typ izby:") . '</b> ' . t($room["room_name"]) . '<br>
+                    <b>' . t("Celková cena:") . '</b> ' . $htl_price . ' €<br><br>
+                    <i>' . t("V prípade, ak chcete niečo vo Vašej rezervácií zmeniť, vráťte sa do vyhľadávania a vytvorte rezerváciu nanovo.") . '</i><br><br>
                 </div>
                 </div>
                 
                         <div class="res-div, form">
             <form method="post" action="" id="nextform2">
-                <label for="name">Vaše meno:</label><br>
+                <label for="name">' . t("Vaše meno:") . '</label><br>
                 <input type="text" id="name" name="name" class="datainput" ' . (isset($_SESSION["cd"]) ? "value= '" . $user["name"] . "'" : "") . ' required><br>
-                <label for="surname">Vaše priezvisko:</label><br>
+                <label for="surname">' . t("Vaše priezvisko:") . '</label><br>
                 <input type="text" id="surname" name="surname" class="datainput" ' . (isset($_SESSION["cd"]) ? "value= '" . $user["surname"] . "'" : "") . ' required><br>
-                <label for="email">Váš email:</label><br>
+                <label for="email">' . t("Váš email:") . '</label><br>
                 <input type="email" id="email" name="email" class="datainput" ' . (isset($_SESSION["cd"]) ? "value= '" . $user["email"] . "'" : "") . ' required><br>
-                <label for="phone">Vaše telefónne číslo:</label><br>
+                <label for="phone">' . t("Vaše telefónne číslo:") . '</label><br>
                 <select id="callingcode" name="callingcode" class="datainput" style="margin: 2vh 0vw 2vh 1vw;width:5vw;" required><option value="" disabled></option><option value="+420" ' . (isset($_SESSION["cd"]) && substr($user["telephone"], 0, -9) === "+420" ? "selected" : "") . ' >+420</option><option value="+421" ' . (isset($_SESSION["cd"]) && substr($user["telephone"], 0, -9) === "+421" ? "selected" : "") . ' >+421</option>' /* */ . '</select>
                 <input type="number" id="telephone" name="telephone" class="datainput" ' . (isset($_SESSION["cd"]) ? "value= '" . substr($user["telephone"], -9) . "'" : "") . ' style="margin: 2vh 1vw 2vh 0vw;width:15vw;" maxlength="9" minlength="9" required><br>
-                <label for="address">Vaša adresa:</label><br>
+                <label for="address">' . t("Vaša adresa:") . '</label><br>
                 <input type="text" id="address" name="address" class="datainput" ' . (isset($_SESSION["cd"]) ? "value= '" . $address . "'" : "") . ' required><br>
-                <label for="city">Vaše mesto:</label><br>
+                <label for="city">' . t("Vaše mesto:") . '</label><br>
                 <input type="text" id="city" name="city" class="datainput" ' . (isset($_SESSION["cd"]) ? "value= '" . $city . "'" : "") . ' required><br>
-                <label for="country">Váš štát:</label><br>
-                <select id="country" name="country" class="datainput" required><option value="" disabled></option><option value="Czech republic" ' . (isset($_SESSION["cd"]) && $country === "Czech republic" ? "selected" : "") . ' >Česká republika</option><option value="Slovakia" ' . (isset($_SESSION["cd"]) && $country === "Slovakia" ? "selected" : "") . ' >Slovenská republika</option>' /* */ . '</select><br>
-                <label for="nationality">Vaša národnosť:</label><br>
-                <select id="nationality" name="nationality" class="datainput" required><option value="" disabled></option><option value="Czech" ' . (isset($_SESSION["cd"]) && $user["nationality"] === "Czech" ? "selected" : "") . ' >Česká</option><option value="Slovak" ' . (isset($_SESSION["cd"]) && $user["nationality"] === "Slovak" ? "selected" : "") . ' >Slovenská</option>' /* */ . '</select><br>
+                <label for="country">' . t("Váš štát:") . '</label><br>
+                <select id="country" name="country" class="datainput" required><option value="" disabled></option><option value="Czech republic" ' . (isset($_SESSION["cd"]) && $country === "Czech republic" ? "selected" : "") . ' >' . t("Česká republika") . '</option><option value="Slovakia" ' . (isset($_SESSION["cd"]) && $country === "Slovakia" ? "selected" : "") . ' >' . t("Slovenská republika") . '</option>' /* */ . '</select><br>
+                <label for="nationality">' . t("Vaša národnosť:") . '</label><br>
+                <select id="nationality" name="nationality" class="datainput" required><option value="" disabled></option><option value="Czech" ' . (isset($_SESSION["cd"]) && $user["nationality"] === "Czech" ? "selected" : "") . ' >' . t("Česká") . '</option><option value="Slovak" ' . (isset($_SESSION["cd"]) && $user["nationality"] === "Slovak" ? "selected" : "") . ' >' . t("Slovenská") . '</option>' /* */ . '</select><br>
                 <input type="hidden" name="user"' . (isset($_SESSION["cd"]) ? "value= '" . $user["customers_id"] . "'" : "0") . '">
-                <input type="submit" class="nextbtn" name="next2" value="Potvrdiť a pokračovať">
+                <input type="submit" class="nextbtn" name="next2" value="' . t("Potvrdiť a pokračovať") . '">
             </form>
             </div>`
                     }
@@ -134,28 +134,28 @@ if (isset($get["hotel"]) && isset($get["room"]) && isset($get["datefrom"]) && is
                     var c = document.querySelector(".content");
                     if (c) {
                         c.innerHTML = `<div class="res-div">
-                <div class="recap-title">Rekapitulácia Vašej rezervácie:</div><br>
+                <div class="recap-title">' . t("Rekapitulácia Vašej rezervácie:") . '</div><br>
                 <div class="recap-text">
-                    <b>Hotel:</b> ' . $htl["name"]. '<br>
-                    <b>Dátum:</b> ' . (new DateTime($get["datefrom"]))->format("d.m.Y") . " - " . (new DateTime($get["dateto"]))->format("d.m.Y") . '<br>
-                    <b>Počet osôb:</b> ' . $get["adults"] . " + " . $get["kids"] . '<br>
-                    <b>Typ izby:</b> ' . $room["room_name"] . '<br>
-                    <b>Celková cena:</b> ' . $htl_price . ' €<br><br>
-                    <i>V prípade, ak chcete niečo vo Vašej rezervácií zmeniť, vráťte sa do vyhľadávania a vytvorte rezerváciu nanovo.</i><br><br>
+                    <b>' . t("Hotel:") . '</b> ' . t($htl["name"]) . '<br>
+                    <b>' . t("Dátum:") . '</b> ' . (new DateTime($get["datefrom"]))->format("d.m.Y") . " - " . (new DateTime($get["dateto"]))->format("d.m.Y") . '<br>
+                    <b>' . t("Počet osôb:") . '</b> ' . $get["adults"] . " + " . $get["kids"] . '<br>
+                    <b>' . t("Typ izby:") . '</b> ' . t($room["room_name"]) . '<br>
+                    <b>' . t("Celková cena:") . '</b> ' . $htl_price . ' €<br><br>
+                    <i>' . t("V prípade, ak chcete niečo vo Vašej rezervácií zmeniť, vráťte sa do vyhľadávania a vytvorte rezerváciu nanovo.") . '</i><br><br>
                 </div>
                 </div>
                 
                         <div class="res-div">
-            <div class="recap-title">Rekapitulácia Vašich údajov:</div><br>
+            <div class="recap-title">' . t("Rekapitulácia Vašich údajov:") . '</div><br>
             <div class="recap-text">
-                <b>Vaše meno:</b> ' . $_POST["name"] . '<br>
-                <b>Vaše priezvisko:</b> ' . $_POST["surname"] . '<br>
-                <b>Váš email:</b> ' . $_POST["email"] . '<br>
-                <b>Vaše telefónne číslo:</b> ' . $_POST["callingcode"] . $_POST["telephone"] . '<br>
-                <b>Vaša adresa:</b> ' . $_POST["address"] . '<br>
-                <b>Vaše mesto:</b> ' . $_POST["city"] . '<br>
-                <b>Váš štát:</b> ' . $_POST["country"] . '<br>
-                <b>Vaša národnosť:</b> ' . $_POST["nationality"] . '
+                <b>' . t("Vaše meno:") . '</b> ' . $_POST["name"] . '<br>
+                <b>' . t("Vaše priezvisko:") . '</b> ' . $_POST["surname"] . '<br>
+                <b>' . t("Váš email:") . '</b> ' . $_POST["email"] . '<br>
+                <b>' . t("Vaše telefónne číslo:") . '</b> ' . $_POST["callingcode"] . $_POST["telephone"] . '<br>
+                <b>' . t("Vaša adresa:") . '</b> ' . $_POST["address"] . '<br>
+                <b>' . t("Vaše mesto:") . '</b> ' . t($_POST["city"]) . '<br>
+                <b>' . t("Váš štát:") . '</b> ' . t($_POST["country"]) . '<br>
+                <b>' . t("Vaša národnosť:") . '</b> ' . t($_POST["nationality"]) . '
             </div>
             <form method="post" action="" id="nextform3">
                 <input type="hidden" name="name" value="' . $_POST["name"] . '">
@@ -168,8 +168,8 @@ if (isset($get["hotel"]) && isset($get["room"]) && isset($get["datefrom"]) && is
                 <input type="hidden" name="country" value="' . $_POST["country"] . '">
                 <input type="hidden" name="nationality" value="' . $_POST["nationality"] . '">
                 <input type="hidden" name="user" value="' . $_POST["user"] . '">
-                <input type="submit" class="nextbtn" name="next3" value="Potvrdiť a pokračovať">
-                <input type="submit" class="nextbtn" name="next1" value="Zmeniť údaje">
+                <input type="submit" class="nextbtn" name="next3" value="' . t("Potvrdiť a pokračovať") . '">
+                <input type="submit" class="nextbtn" name="next1" value="' . t("Zmeniť údaje") . '">
             </form>
         </div>`
                     }
@@ -181,28 +181,28 @@ echo '<script>
                     var c = document.querySelector(".content");
                     if (c) {
                         c.innerHTML = `<div class="res-div">
-                <div class="recap-title">Rekapitulácia Vašej rezervácie:</div><br>
+                <div class="recap-title">' . t("Rekapitulácia Vašej rezervácie:") . '</div><br>
                 <div class="recap-text">
-                    <b>Hotel:</b> ' . $htl["name"]. '<br>
-                    <b>Dátum:</b> ' . (new DateTime($get["datefrom"]))->format("d.m.Y") . " - " . (new DateTime($get["dateto"]))->format("d.m.Y") . '<br>
-                    <b>Počet osôb:</b> ' . $get["adults"] . " + " . $get["kids"] . '<br>
-                    <b>Typ izby:</b> ' . $room["room_name"] . '<br>
-                    <b>Celková cena:</b> ' . $htl_price . ' €<br><br>
-                    <i>V prípade, ak chcete niečo vo Vašej rezervácií zmeniť, vráťte sa do vyhľadávania a vytvorte rezerváciu nanovo.</i><br><br>
+                    <b>' . t("Hotel:") . '</b> ' . t($htl["name"]) . '<br>
+                    <b>' . t("Dátum:") . '</b> ' . (new DateTime($get["datefrom"]))->format("d.m.Y") . " - " . (new DateTime($get["dateto"]))->format("d.m.Y") . '<br>
+                    <b>' . t("Počet osôb:") . '</b> ' . $get["adults"] . " + " . $get["kids"] . '<br>
+                    <b>' . t("Typ izby:") . '</b> ' . t($room["room_name"]) . '<br>
+                    <b>' . t("Celková cena:") . '</b> ' . $htl_price . ' €<br><br>
+                    <i>' . t("V prípade, ak chcete niečo vo Vašej rezervácií zmeniť, vráťte sa do vyhľadávania a vytvorte rezerváciu nanovo.") . '</i><br><br>
                 </div>
                 </div>
                 
                         <div class="res-div">
-            <div class="recap-title">Rekapitulácia Vašich údajov:</div><br>
+            <div class="recap-title">' . t("Rekapitulácia Vašich údajov:") . '</div><br>
             <div class="recap-text">
-                <b>Vaše meno:</b> ' . $_POST["name"] . '<br>
-                <b>Vaše priezvisko:</b> ' . $_POST["surname"] . '<br>
-                <b>Váš email:</b> ' . $_POST["email"] . '<br>
-                <b>Vaše telefónne číslo:</b> ' . $_POST["telephone"] . '<br>
-                <b>Vaša adresa:</b> ' . $_POST["address"] . '<br>
-                <b>Vaše mesto:</b> ' . $_POST["city"] . '<br>
-                <b>Váš štát:</b> ' . $_POST["country"] . '<br>
-                <b>Vaša národnosť:</b> ' . $_POST["nationality"] . '
+                <b>' . t("Vaše meno:") . '</b> ' . $_POST["name"] . '<br>
+                <b>' . t("Vaše priezvisko:") . '</b> ' . $_POST["surname"] . '<br>
+                <b>' . t("Váš email:") . '</b> ' . $_POST["email"] . '<br>
+                <b>' . t("Vaše telefónne číslo:") . '</b> ' . $_POST["callingcode"] . $_POST["telephone"] . '<br>
+                <b>' . t("Vaša adresa:") . '</b> ' . $_POST["address"] . '<br>
+                <b>' . t("Vaše mesto:") . '</b> ' . t($_POST["city"]) . '<br>
+                <b>' . t("Váš štát:") . '</b> ' . t($_POST["country"]) . '<br>
+                <b>' . t("Vaša národnosť:") . '</b> ' . t($_POST["nationality"]) . '
             </div>
         </div>
         
@@ -218,12 +218,12 @@ echo '<script>
                 <input type="hidden" name="country" value="' . $_POST["country"] . '">
                 <input type="hidden" name="nationality" value="' . $_POST["nationality"] . '">
                 <input type="hidden" name="user" value="' . $_POST["user"] . '">
-                <label for="payment" style="margin: 0;"><abbr title="Momentálne žiaľ poskytujeme len možnosť platby priamo v hoteli. Platba cez internet nie je možná.">Vyberte spôsob platby:</abbr></label>
-                <select id="payment" name="payment" class="datainput" required><option value="In hotel" selected>Platba v hoteli</option></select><br>
-                <input type="checkbox" style="height:20px;width:20px;" required> Zadaním rezervácie sa zaväzujem zaplatiť požadovanú sumu alebo storno poplatok ubytovateľovi.<br>
-                <input type="checkbox" style="height:20px;width:20px;" required> Súhlasím s <a href="terms">Všeobecnými podmienkami</a>.<br>
-                <input type="checkbox" style="height:20px;width:20px;" required> Súhlasím so spracovaním mojich osobných údajov podľa <a href="privacy">Zásad spracovania osobných údajov</a>.<br>
-                <input type="submit" class="nextbtn" name="next4" value="Záväzne zarezervovať">
+                <label for="payment" style="margin: 0;"><abbr title="' . t("Momentálne žiaľ poskytujeme len možnosť platby priamo v hoteli. Platba cez internet nie je možná.") . '">' . t("Vyberte spôsob platby:") . '</abbr></label>
+                <select id="payment" name="payment" class="datainput" required><option value="In hotel" selected>' . t("Platba v hoteli") . '</option></select><br>
+                <input type="checkbox" style="height:20px;width:20px;" required> ' . t("Zadaním rezervácie sa zaväzujem zaplatiť požadovanú sumu alebo storno poplatok ubytovateľovi.") . '<br>
+                <input type="checkbox" style="height:20px;width:20px;" required> ' . t("Súhlasím s ") . " <a href='terms'>" . t("Všeobecnými podmienkami") . '</a>.<br>
+                <input type="checkbox" style="height:20px;width:20px;" required> ' . t("Súhlasím so spracovaním mojich osobných údajov podľa ") . " <a href='privacy'>" . t("Zásad spracovania osobných údajov") . '</a>.<br>
+                <input type="submit" class="nextbtn" name="next4" value="' . t("Záväzne zarezervovať") . '">
             </form>
         </div>`
                     }
@@ -241,48 +241,46 @@ echo '<script>
                     var c = document.querySelector(".content");
                     if (c) {
                         c.innerHTML = `<div class="res-div">
-                <div class="recap-title" style="font-weight:700;">Vaša rezervácia bola zaslaná.</div>
-                <div class="recap-text">Číslo objednávky: ' . $booking["bookings_id"] .'</div><br><br>
+                <div class="recap-title" style="font-weight:700;">' . t("Vaša rezervácia bola zaslaná.") . '</div>
+                <div class="recap-text">' . t("Číslo rezervácie:") . ' ' . $booking["bookings_id"] .'</div><br><br>
 
-                <div class="recap-title">Rekapitulácia Vašej rezervácie:</div><br>
+                <div class="recap-title">' . t("Rekapitulácia Vašej rezervácie:") . '</div><br>
                 <div class="recap-text">
-                    <b>Hotel:</b> ' . $htl["name"]. '<br>
-                    <b>Dátum:</b> ' . (new DateTime($get["datefrom"]))->format("d.m.Y") . " - " . (new DateTime($get["dateto"]))->format("d.m.Y") . '<br>
-                    <b>Počet osôb:</b> ' . $get["adults"] . " + " . $get["kids"] . '<br>
-                    <b>Typ izby:</b> ' . $room["room_name"] . '<br>
-                    <b>Celková cena:</b> ' . $htl_price . ' €<br><br>
+                    <b>' . t("Hotel:") . '</b> ' . t($htl["name"]) . '<br>
+                    <b>' . t("Dátum:") . '</b> ' . (new DateTime($get["datefrom"]))->format("d.m.Y") . " - " . (new DateTime($get["dateto"]))->format("d.m.Y") . '<br>
+                    <b>' . t("Počet osôb:") . '</b> ' . $get["adults"] . " + " . $get["kids"] . '<br>
+                    <b>' . t("Typ izby:") . '</b> ' . t($room["room_name"]) . '<br>
+                    <b>' . t("Celková cena:") . '</b> ' . $htl_price . ' €<br><br>
                 </div>
                 </div>
                 
                         <div class="res-div">
-            <div class="recap-title">Rekapitulácia Vašich údajov:</div><br>
+            <div class="recap-title">' . t("Rekapitulácia Vašich údajov:") . '</div><br>
             <div class="recap-text">
-                <b>Vaše meno:</b> ' . $_POST["name"] . '<br>
-                <b>Vaše priezvisko:</b> ' . $_POST["surname"] . '<br>
-                <b>Váš email:</b> ' . $_POST["email"] . '<br>
-                <b>Vaše telefónne číslo:</b> ' . $_POST["telephone"] . '<br>
-                <b>Vaša adresa:</b> ' . $_POST["address"] . '<br>
-                <b>Vaše mesto:</b> ' . $_POST["city"] . '<br>
-                <b>Váš štát:</b> ' . $_POST["country"] . '<br>
-                <b>Vaša národnosť:</b> ' . $_POST["nationality"] . '
+                <b>' . t("Vaše meno:") . '</b> ' . $_POST["name"] . '<br>
+                <b>' . t("Vaše priezvisko:") . '</b> ' . $_POST["surname"] . '<br>
+                <b>' . t("Váš email:") . '</b> ' . $_POST["email"] . '<br>
+                <b>' . t("Vaše telefónne číslo:") . '</b> ' . $_POST["callingcode"] . $_POST["telephone"] . '<br>
+                <b>' . t("Vaša adresa:") . '</b> ' . $_POST["address"] . '<br>
+                <b>' . t("Vaše mesto:") . '</b> ' . t($_POST["city"]) . '<br>
+                <b>' . t("Váš štát:") . '</b> ' . t($_POST["country"]) . '<br>
+                <b>' . t("Vaša národnosť:") . '</b> ' . t($_POST["nationality"]) . '
             </div>
         </div>`
                     }
                 });
             </script>';
         } else { // 5 error
-    echo <<<TEXT
-        <script>
+    echo '<script>
             document.addEventListener("DOMContentLoaded", () => {
                 var c = document.querySelector(".content");
                 if (c) {
                     c.innerHTML = `<img src="styles/icons/error.svg" style="width: 20vh; height: 20vh; position: absolute; top: 30vh; left: 50%; transform: translate(-50%, -50%);">
-                                            <div class="welcometext" style="padding-top: 30vh;">Niečo sa pokazilo...</div>
-                                            <div style="color:white;text-align:center;font-family:'Roboto', sans-serif; font-weight: 400; font-style: normal;font-size: 3vh; padding-top: 2vh;">Skúste vytvoriť a zadať rezerváciu ešte raz.</div>`
+                                            <div class="welcometext" style="padding-top: 30vh;">' . t("Niečo sa pokazilo.") . '</div>
+                                            <div style="color:white;text-align:center;font-family:"Roboto", sans-serif; font-weight: 400; font-style: normal;font-size: 3vh; padding-top: 2vh;">' . t("Skúste vytvoriť rezerváciu ešte raz.") . '</div>`
                 }
             });
-        </script>
-        TEXT; 
+        </script>';
         }
     } else { // 1 recap reservation
         echo '<script>
@@ -290,16 +288,16 @@ echo '<script>
                     var c = document.querySelector(".content");
                     if (c) {
                         c.innerHTML = `<div class="res-div">
-                <div class="recap-title">Rekapitulácia Vašej rezervácie:</div><br>
+                <div class="recap-title">' . t("Rekapitulácia Vašej rezervácie:") . '</div><br>
                 <div class="recap-text">
-                    <b>Hotel:</b> ' . $htl["name"]. '<br>
-                    <b>Dátum:</b> ' . (new DateTime($get["datefrom"]))->format("d.m.Y") . " - " . (new DateTime($get["dateto"]))->format("d.m.Y") . '<br>
-                    <b>Počet osôb:</b> ' . $get["adults"] . " + " . $get["kids"] . '<br>
-                    <b>Typ izby:</b> ' . $room["room_name"] . '<br>
-                    <b>Celková cena:</b> ' . $htl_price . ' €<br><br>
-                    <i>V prípade, ak chcete niečo vo Vašej rezervácií zmeniť, vráťte sa do vyhľadávania a vytvorte rezerváciu nanovo.</i><br><br>
+                    <b>' . t("Hotel:") . '</b> ' . t($htl["name"]) . '<br>
+                    <b>' . t("Dátum:") . '</b> ' . (new DateTime($get["datefrom"]))->format("d.m.Y") . " - " . (new DateTime($get["dateto"]))->format("d.m.Y") . '<br>
+                    <b>' . t("Počet osôb:") . '</b> ' . $get["adults"] . " + " . $get["kids"] . '<br>
+                    <b>' . t("Typ izby:") . '</b> ' . t($room["room_name"]) . '<br>
+                    <b>' . t("Celková cena:") . '</b> ' . $htl_price . ' €<br><br>
+                    <i>' . t("V prípade, ak chcete niečo vo Vašej rezervácií zmeniť, vráťte sa do vyhľadávania a vytvorte rezerváciu nanovo.") . '</i><br><br>
                     <form method="post" action="" id="nextform1">
-                        <input type="submit" class="nextbtn" name="next1" value="Potvrdiť a pokračovať">
+                        <input type="submit" class="nextbtn" name="next1" value="' . t("Potvrdiť a pokračovať") . '">
                     </form>
                 </div>
                 </div>`
@@ -308,18 +306,16 @@ echo '<script>
             </script>';
     }
 } else { // error
-    echo <<<TEXT
-        <script>
+    echo '<script>
             document.addEventListener("DOMContentLoaded", () => {
                 var c = document.querySelector(".content");
                 if (c) {
                     c.innerHTML = `<img src="styles/icons/error.svg" style="width: 20vh; height: 20vh; position: absolute; top: 30vh; left: 50%; transform: translate(-50%, -50%);">
-                                            <div class="welcometext" style="padding-top: 30vh;">Nemáme údaje potrebné na vytvorenie rezervácie.</div>
-                                            <div style="color:white;text-align:center;font-family:'Roboto', sans-serif; font-weight: 400; font-style: normal;font-size: 3vh; padding-top: 2vh;">Vráťte sa prosím do vyhľadávania a zadajte údaje ešte raz.</div>`
+                                            <div class="welcometext" style="padding-top: 30vh;">' . t("Nemáme údaje potrebné na vytvorenie rezervácie.") . '</div>
+                                            <div style="color:white;text-align:center;font-family:"Roboto", sans-serif; font-weight: 400; font-style: normal;font-size: 3vh; padding-top: 2vh;">' . t("Vráťte sa prosím do vyhľadávania a zadajte údaje ešte raz.") . '</div>`
                 }
             });
-        </script>
-        TEXT;    
+        </script>';
 }
 ?>
 <!DOCTYPE html>
@@ -327,10 +323,10 @@ echo '<script>
 to-dos:
 - langs
 -->
-<html lang="sk"> <!-- after translation edit -->
+<html lang="<?php echo $lang; ?>">
     <head>
         <meta charset="UTF-8">
-        <title>Rezervácia | accomio | Hotely, penzióny a omnoho viac</title> <!---->
+        <title><?php echo t("Rezervácia") . " | " . t("accomio | Hotely, penzióny a omnoho viac");?></title> <!---->
         <link rel="icon" type="image/x-icon" href="styles/icons/icon.ico">
         <link rel='stylesheet' href='styles/basic.css'>
         <link rel='stylesheet' href='styles/hotels.css'>

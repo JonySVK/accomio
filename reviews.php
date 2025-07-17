@@ -65,14 +65,14 @@ $sql_booking = "SELECT * FROM bookings WHERE bookings_id = '" . $_GET["b"] . "' 
 $s_booking = $conn->query($sql_booking);
 $booking = $s_booking->fetch_assoc();
 if ($s_booking->num_rows == 0) {
-    echo "<script>alert('Niečo sa pokazilo.'); window.location.href = '/accomio/user' </script>";
+    echo "<script>alert('" . t("Niečo sa pokazilo.") . "'); window.location.href = '/accomio/user' </script>";
 }
 
 $sql_reviews = "SELECT * FROM hotels_reviews WHERE bookings_id = '" . $_GET["b"] . "'";
 $s_reviews = $conn->query($sql_reviews);
 $reviews = $s_reviews->fetch_assoc();
 if ($s_reviews->num_rows > 0) {
-echo "<script>alert('Recenziu k tejto rezervácii ste už pridali.'); window.location.href = '/accomio/user'</script>";
+echo "<script>alert('" . t("Recenziu k tejto rezervácii ste už pridali.") . "'); window.location.href = '/accomio/user'</script>";
     exit();
 }
 
@@ -80,7 +80,7 @@ $sql_hotel = "SELECT * FROM hotels_info WHERE hotels_id =" . $booking['hotels_id
 $s_hotel = $conn->query($sql_hotel);
 $hotel = $s_hotel->fetch_assoc();
 if ($s_hotel->num_rows == 0) {
-    echo "<script>alert('Niečo sa pokazilo.'); window.location.href = '/accomio/user'</script>";
+    echo "<script>alert('" . t("Niečo sa pokazilo.") . "'); window.location.href = '/accomio/user'</script>";
     exit();
 }
 
@@ -102,7 +102,7 @@ if(isset($_POST['rating'])) {
             document.addEventListener('DOMContentLoaded', () => {
                 var contactform = document.querySelector('#contactform');
                 if (contactform) {
-                    contactform.innerHTML = `<span style='padding-top:5vh;font-weight:800;'>Vaša recenzia bola úspešne odoslaná!</span>`;
+                    contactform.innerHTML = `<span style='padding-top:5vh;font-weight:800;'>" . t("Vaša recenzia bola úspešne odoslaná!") . "</span>`;
                 }
             });
         </script>";
@@ -111,7 +111,7 @@ if(isset($_POST['rating'])) {
             document.addEventListener('DOMContentLoaded', () => {
                 var contactform = document.querySelector('#contactform');
                 if (contactform) {
-                    contactform.innerHTML = `<span style='padding-top:5vh;font-weight:800;color:red;'>Pri odosielaní recenzie došlo k chybe. Skúste to prosím neskôr.</span>`;
+                    contactform.innerHTML = `<span style='padding-top:5vh;font-weight:800;color:red;'>" . t("Pri odosielaní recenzie došlo k chybe. Skúste to prosím neskôr.") . "</span>`;
                 }
             });
         </script>";
@@ -119,10 +119,10 @@ if(isset($_POST['rating'])) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="sk"> <!-- after translation edit -->
+<html lang="<?php echo $lang; ?>">
     <head>
         <meta charset="UTF-8">
-        <title>Pridať recenziu | accomio | Hotely, penzióny a omnoho viac</title>
+        <title><?php echo t("Pridať recenziu") . " | " . t("accomio | Hotely, penzióny a omnoho viac");?></title>
         <link rel="icon" type="image/x-icon" href="styles/icons/icon.ico">
         <link rel='stylesheet' href='styles/basic.css'>
         <link rel='stylesheet' href='styles/user.css'>
@@ -177,7 +177,7 @@ if(isset($_POST['rating'])) {
         <div class="text" style="text-align: center;font-size: 3.25vh;">
             <form method="post" action="" class="contactform" id="contactform">
                 <input type="hidden" name="bookings_id" value="<?php echo $_GET["b"];?>" required><br>
-                <span style="">Ako hodnotíte "<?php echo $hotel["name"]; ?>"?</span><br>
+                <span style=""><?php echo t('Ako hodnotíte "') . t($hotel["name"]); ?>"?</span><br>
                 <div class="rating">
                     <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
                     <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
@@ -185,18 +185,11 @@ if(isset($_POST['rating'])) {
                     <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
                     <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
                 </div><br>
-                <textarea name="review" class="contactinput" placeholder="Vaše hodnotenie (nepovinné)" style=" width: 20vw;height:18vh;"></textarea><br>
-                <input type="checkbox" name="name" value="1" class="contactcheckbox" style="height:20px;width:20px;;margin: 0 -0.5vw 4vh 0;" checked><label style="font-size: 2.3vh;"> Zobraziť pri recenzii moje meno</label><br>
-                <input type="submit" value="Odoslať" class="contactinput" id="contactsubmit">
+                <textarea name="review" class="contactinput" placeholder="<?php echo t('Vaše hodnotenie (nepovinné)');?>" style=" width: 20vw;height:18vh;"></textarea><br>
+                <input type="checkbox" name="name" value="1" class="contactcheckbox" style="height:20px;width:20px;;margin: 0 -0.5vw 4vh 0;" checked><label style="font-size: 2.3vh;"> <?php echo t('Zobraziť pri recenzii moje meno');?></label><br>
+                <input type="submit" value="<?php echo t('Odoslať');?>" class="contactinput" id="contactsubmit">
             </form>
         </div>
-
-        <style>
-
-</style>
-
-<form class="rating">
-</form>
         
         <footer id="footer">
             <div class="footer-c1">

@@ -75,7 +75,7 @@ if (isset($_SESSION["cd"])) {
             document.addEventListener("DOMContentLoaded", () => {
             var loginpage = document.querySelector("#login-page")
             if (loginpage) {
-                loginpage.innerHTML = `<form id="login-page-form" method="post" action="login.php"><label for="emailx">' . t("Zadajte svoj email") . '</label><br><input type="email" id="emailx" name="emailx" class="loginfield" value="' . $_POST["email"] . '" readonly required><br><label for="password">' . t("Zadajte svoje heslo") . '</label><br><input type="password" id="password" name="password" class="loginfield" required><br><input type="submit" value="' . t("Prihlásiť sa") . '"></form>`
+                loginpage.innerHTML = `<form id="login-page-form" method="post" action="login.php"><label for="emailx">' . t("Zadajte svoj email") . '</label><br><input type="email" id="emailx" name="emailx" class="loginfield" value="' . $_POST["email"] . '" readonly required><br><label for="password">' . t("Zadajte svoje heslo") . '</label><br><input type="password" id="password" name="password" class="loginfield" required><br><input type="submit" value="' . t("Prihlásiť sa") . '"></form><div class="forgotpass"><a onclick="if (confirm(\'' . t("Zabudli ste heslo? Kontaktujte nás a radi vám pomôžeme.") . '\')) {window.location.href=\'contact\'}">' . t("Zabudli ste heslo?") . '</a></div>`
             }
             var welcometext = document.querySelector("#welcometext")
             if (welcometext) {
@@ -100,7 +100,7 @@ if (isset($_SESSION["cd"])) {
                 document.addEventListener('DOMContentLoaded', () => {
                     var loginpage = document.querySelector('#login-page');
                     if (loginpage) {
-                        loginpage.innerHTML = `<form id='login-page-form' method='post' action='login.php'><label for='emailx'>" . t("Zadajte svoj email") . "</label><br><input type='email' id='emailx' name='emailx' class='loginfield' value='" . $_POST["email"] . "' readonly required><br><label for='password'>" . t("Zadajte svoje heslo") . "</label><br><input type='password' id='password' name='password' class='loginfield' required><br><input type='submit' value='" . t("Prihlásiť sa") . "'></form>`;
+                        loginpage.innerHTML = `<form id='login-page-form' method='post' action='login.php'><label for='emailx'>" . t("Zadajte svoj email") . "</label><br><input type='email' id='emailx' name='emailx' class='loginfield' value='" . $_POST["email"] . "' readonly required><br><label for='password'>" . t("Zadajte svoje heslo") . "</label><br><input type='password' id='password' name='password' class='loginfield' required><br><input type='submit' value='" . t("Prihlásiť sa") . "'></form><div class='forgotpass'><a onclick='if (confirm(\"" . t("Zabudli ste heslo? Kontaktujte nás a radi vám pomôžeme.") . "\")) {window.location.href=\"contact\"}'>" . t("Zabudli ste heslo?") . "</a></div>`;
                     }
                     var welcometext = document.querySelector('#welcometext');
                     if (welcometext) {
@@ -112,7 +112,7 @@ if (isset($_SESSION["cd"])) {
             document.addEventListener('DOMContentLoaded', () => {
                 var loginpage = document.querySelector('#login-page');
                 if (loginpage) {
-                    loginpage.innerHTML = `<form id='login-page-form' method='post' action='login.php'><label for='emailx'>" . t("Zadajte svoj email") . "</label><br><input type='email' id='emailx' name='emailx' class='loginfield' value='" . $_POST["email"] . "' required><br><label for='password'>" . t("Zadajte svoje heslo") . "</label><br><input type='password' id='password' name='password' class='loginfield' required><br><input type='submit' value='" . t("Prihlásiť sa") . "'></form>`;
+                    loginpage.innerHTML = `<form id='login-page-form' method='post' action='login.php'><label for='emailx'>" . t("Zadajte svoj email") . "</label><br><input type='email' id='emailx' name='emailx' class='loginfield' value='" . $_POST["email"] . "' required><br><label for='password'>" . t("Zadajte svoje heslo") . "</label><br><input type='password' id='password' name='password' class='loginfield' required><br><input type='submit' value='" . t("Prihlásiť sa") . "'></form><div class='forgotpass'><a onclick='if (confirm(\"" . t("Zabudli ste heslo? Kontaktujte nás a radi vám pomôžeme.") . "\")) {window.location.href=\"contact\"}'>" . t("Zabudli ste heslo?") . "</a></div>`;
                 }
                 var welcometext = document.querySelector('#welcometext');
                 if (welcometext) {
@@ -129,7 +129,7 @@ if (isset($_SESSION["cd"])) {
             document.addEventListener('DOMContentLoaded', () => {
                 var loginpage = document.querySelector('#login-page');
                 if (loginpage) {
-                    loginpage.innerHTML = `<form id='login-page-form' method='post' action='login.php'><label for='emailx'>" . t("Zadajte svoj email") . "</label><br><input type='email' id='emailx' name='emailx' class='loginfield' value='" . $_POST["emailx"] . "' required><br><label for='password'>" . t("Zadajte svoje heslo") . "</label><br><input type='password' id='password' name='password' class='loginfield' required><br><input type='submit' value='" . t("Prihlásiť sa") . "'></form>`;
+                    loginpage.innerHTML = `<form id='login-page-form' method='post' action='login.php'><label for='emailx'>" . t("Zadajte svoj email") . "</label><br><input type='email' id='emailx' name='emailx' class='loginfield' value='" . $_POST["emailx"] . "' required><br><label for='password'>" . t("Zadajte svoje heslo") . "</label><br><input type='password' id='password' name='password' class='loginfield' required><br><input type='submit' value='" . t("Prihlásiť sa") . "'></form><div class='forgotpass'><a onclick='if (confirm(\"" . t("Zabudli ste heslo? Kontaktujte nás a radi vám pomôžeme.") . "\")) {window.location.href=\"contact\"}'>" . t("Zabudli ste heslo?") . "</a></div>`;
                 }
                 var welcometext = document.querySelector('#welcometext');
                 if (welcometext) {
@@ -145,7 +145,7 @@ if (isset($_SESSION["cd"])) {
                 document.addEventListener('DOMContentLoaded', () => {
                     var loginpage = document.querySelector('#login-page');
                     if (loginpage) {
-                        loginpage.innerHTML = `<form id='login-page-form' method='post' action='login.php'><label for='emailx'>" . t("Zadajte svoj email") . "</label><br><input type='email' id='emailx' name='emailx' class='loginfield' value='" . $_POST["emailx"] . "' required><br><label for='password'>" . t("Zadajte svoje heslo") . "</label><br><input type='password' id='password' name='password' class='loginfield' required><br><input type='submit' value='" . t("Prihlásiť sa") . "'></form>`;
+                        loginpage.innerHTML = `<form id='login-page-form' method='post' action='login.php'><label for='emailx'>" . t("Zadajte svoj email") . "</label><br><input type='email' id='emailx' name='emailx' class='loginfield' value='" . $_POST["emailx"] . "' required><br><label for='password'>" . t("Zadajte svoje heslo") . "</label><br><input type='password' id='password' name='password' class='loginfield' required><br><input type='submit' value='" . t("Prihlásiť sa") . "'></form><div class='forgotpass'><a onclick='if (confirm(\"" . t("Zabudli ste heslo? Kontaktujte nás a radi vám pomôžeme.") . "\")) {window.location.href=\"contact\"}'>" . t("Zabudli ste heslo?") . "</a></div>`;
                     }
                     var welcometext = document.querySelector('#welcometext');
                     if (welcometext) {
@@ -183,7 +183,7 @@ if (isset($_SESSION["cd"])) {
 };
 ?>
 <!DOCTYPE html>
-<html lang="sk"> <!-- after translation edit -->
+<html lang="<?php echo $lang; ?>">
     <head>
         <meta charset="UTF-8">
         <title><?php echo t("Príhlasenie sa") . " | " . t("accomio | Hotely, penzióny a omnoho viac");?></title>

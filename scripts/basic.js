@@ -28,30 +28,8 @@ if (document.documentElement.scrollHeight > window.innerHeight) {
     document.querySelector("#headername").style.setProperty("margin", "0 0 0.65vh -0.1vw", "important");
 }
 
-var plchldr = document.querySelector("#place")
-if (plchldr && plchldr.value === "") {
-    var placeholder = ""
-    var cities = ["Bratislava", "Viedeň", "Berlín", "Londýn"] // update after connect database
-    var currentCityIndex = 0
-    var charIndex = 0
-    var isDeleting = false
-
-    setInterval(function () {
-        const currentCity = cities[currentCityIndex];
-
-        placeholder = currentCity.slice(0, charIndex++);
-        if (charIndex - 1 > currentCity.length) {
-            placeholder = ""
-            currentCityIndex = (currentCityIndex + 1) % cities.length
-            charIndex = 0
-        }
-
-        document.querySelector('#place').placeholder = placeholder
-    }, 500);
-}
-
 function copy() {
-    var copyText = document.querySelector("#copy").innerHTML = "Obsah bol skopírovaný do schránky"
+    var copyText = document.querySelector("#copy").innerHTML = "Content has been copied to the clipboard."
     var copyText = document.querySelector("#copy").style.setProperty("visibility", "visible", "important");
     setTimeout(() => {
         var copyText = document.querySelector("#copy").innerHTML = ""

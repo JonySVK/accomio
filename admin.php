@@ -66,13 +66,13 @@ if (isset($_GET["site"]) && $_GET["site"] == "com") {
     $sql_com = "SELECT * FROM contact WHERE `read` = 0 ORDER BY date DESC"; $s_com = $conn->query($sql_com);
     $cont = "";
     while($com = $s_com->fetch_assoc()) {
-        $cont .= "<div class='comdiv'><div class='comname'>" . (string)$com["name"] . "</div><div class='comdate'>" . (new DateTime($com["date"]))->format("d.m.Y H:i:s") . "</div><div class='commessage'><i>" . (string)$com["message"] . "</i></div><div class='comemail'>Odpovedajte na: " . (string)$com["email"] . "</div><form action='' method='post'><input type='hidden' name='read' value='" . (string)$com["id"] . "'><input type='submit' value='OZNAČIŤ AKO PREČÍTANÉ' class='combtn'></form></div>";
+        $cont .= "<div class='comdiv'><div class='comname'>" . (string)$com["name"] . "</div><div class='comdate'>" . ((new DateTime($com["date"]))->format("d.m.Y H:i:s")) . "</div><div class='commessage'><i>" . (string)$com["message"] . "</i></div><div class='comemail'>" . t("Odpovedajte na:") . " " . (string)$com["email"] . "</div><form action='' method='post'><input type='hidden' name='read' value='" . (string)$com["id"] . "'><input type='submit' value='" . t("OZNAČIŤ AKO PREČÍTANÉ") . "' class='combtn'></form></div>";
     }
     echo '<script>
             document.addEventListener("DOMContentLoaded", () => {
                 var adminsite = document.querySelector("#adminsite");
                 if (adminsite) {
-                    adminsite.innerHTML = `<div class="text-title">Správy od zákazníkov</div>' . $cont . '`
+                    adminsite.innerHTML = `<div class="text-title">' . t("Správy od zákazníkov") . '</div>' . $cont . '`
                 }
             });
             </script>';
@@ -83,8 +83,8 @@ if (isset($_GET["site"]) && $_GET["site"] == "com") {
                 var adminsite = document.querySelector("#adminsite");
                 if (adminsite) {
                     adminsite.innerHTML = `<form method="post" action="" style="text-align: center;">
-            <input type="email" name="email" placeholder="Email" class="contactinput" required><br>
-            <input type="submit" value="Vyhľadať" class="contactinput" style="margin-top: -1vh;">
+            <input type="email" name="email" placeholder="' . t("Email") . '" class="contactinput" required><br>
+            <input type="submit" value="' . t("Vyhľadať") . '" class="contactinput" style="margin-top: -1vh;">
         </form>`
                 }
             });
@@ -94,13 +94,13 @@ if (isset($_GET["site"]) && $_GET["site"] == "com") {
     $sql_com = "SELECT * FROM contact WHERE `read` = 0 ORDER BY date DESC"; $s_com = $conn->query($sql_com);
     $cont = "";
     while($com = $s_com->fetch_assoc()) {
-        $cont .= "<div class='comdiv'><div class='comname'>" . (string)$com["name"] . "</div><div class='comdate'>" . (string)$com["date"] . "</div><div class='commessage'><i>" . (string)$com["message"] . "</i></div><div class='comemail'>Odpovedajte na: " . (string)$com["email"] . "</div><form action='' method='post'><input type='hidden' name='read' value='" . (string)$com["id"] . "'><input type='submit' value='OZNAČIŤ AKO PREČÍTANÉ' class='combtn'></form></div>";
+        $cont .= "<div class='comdiv'><div class='comname'>" . (string)$com["name"] . "</div><div class='comdate'>" . ((new DateTime($com["date"]))->format("d.m.Y H:i:s")) . "</div><div class='commessage'><i>" . (string)$com["message"] . "</i></div><div class='comemail'>" . t("Odpovedajte na:") . " " . (string)$com["email"] . "</div><form action='' method='post'><input type='hidden' name='read' value='" . (string)$com["id"] . "'><input type='submit' value='" . t("OZNAČIŤ AKO PREČÍTANÉ") . "' class='combtn'></form></div>";
     }
     echo '<script>
             document.addEventListener("DOMContentLoaded", () => {
                 var adminsite = document.querySelector("#adminsite");
                 if (adminsite) {
-                    adminsite.innerHTML = `<div class="text-title">Správy od zákazníkov</div>' . $cont . '`
+                    adminsite.innerHTML = `<div class="text-title">' . t("Správy od zákazníkov") . '</div>' . $cont . '`
                 }
             });
             </script>';
@@ -118,14 +118,14 @@ if(isset($_POST['email'])) {
     if ($s_user->num_rows > 0) {
         $output = $s_user->fetch_assoc();
         if ($output["nationality"] == "admin") {
-            $role = "<div style='color: red; font-weight: bold;'>Tento používateľ je administrátor.</div>";
+            $role = "<div style='color: red; font-weight: bold;'>" . t("Tento používateľ je administrátor.") . "</div>";
         } elseif ($output["nationality"] == "partner") {
             $sql_hotel = "SELECT * FROM hotels_info WHERE hotels_id = '" . $output["surname"] . "'";
             $s_hotel = $conn->query($sql_hotel);
             $hotel = $s_hotel->fetch_assoc();
-            $role = "<div style='color: orange; font-weight: bold;'>Tento používateľ je partner z hotela " . $hotel["name"] . ".</div>";
+            $role = "<div style='color: orange; font-weight: bold;'>" . t("Tento používateľ je partner z hotela") . " " . t($hotel["name"]) . ".</div>";
         } else {
-             $role = "<div style='color: green; font-weight: bold;'>Tento používateľ je bežný používateľ.</div>";
+             $role = "<div style='color: green; font-weight: bold;'>" . t("Tento používateľ je bežný používateľ.") . "</div>";
         }
         echo '<script>
                 document.addEventListener("DOMContentLoaded", () => {
@@ -133,19 +133,20 @@ if(isset($_POST['email'])) {
                     adminsite.innerHTML = `<form method="post" action="" style="text-align: center;">
             <input type="email" name="email" placeholder="Email" class="contactinput" required><br>
             <input type="submit" value="Vyhľadať" class="contactinput" style="margin-top: -1vh;">
-        </form><br><br><br><div class="useroutput">Meno: ' . $output["name"] . ' ' . $output["surname"] . '<br>
-            Email: ' . $output["email"] . '<br>
-            Telefón: ' . $output["telephone"] . '<br>
-            Adresa: ' . $output["address"] . '<br>
-            Národnosť: ' . $output["nationality"] . '<br><br>' . $role . '</div><br><br>
+        </form><br><br><br><div class="useroutput">' . t("Meno") . ': ' . $output["name"] . ' ' . $output["surname"] . '<br>
+            ' . t("Email") . ': ' . $output["email"] . '<br>
+            ' . t("Telefón") . ': ' . $output["telephone"] . '<br>
+            ' . t("Adresa") . ': ' . $output["address"] . '<br>
+            ' . t("Národnosť") . ': ' . $output["nationality"] . '<br><br>' . $role . '</div><br><br>
 
             <form method="post" action="" style="text-align: center;">
                 <input type="hidden" name="id" value="' . $output["customers_id"] . '">
-                <button type="submit" name="action" value="normal" id="contactsubmit" style="font-size:2vh; width: 20vw; height: 8vh;margin: 1vh;">ZMENIŤ NA BEŽNÉHO POUŽÍVATEĽA</button><br>
-                <button type="submit" name="action" value="partner" id="contactsubmit" style="font-size:2vh; width: 20vw; height: 8vh;margin: 1vh;">ZMENIŤ NA PARTNERA</button><br>
-                <button type="submit" name="action" value="admin" id="contactsubmit" style="font-size:2vh; width: 20vw; height: 8vh;margin: 1vh;">ZMENIŤ NA ADMINISTRÁTORA</button><br>
-                <button type="submit" name="action" value="delete" id="contactsubmit" style="font-size:2vh; width: 20vw; height: 8vh;margin: 1vh;">ZMAZAŤ POUŽÍVATEĽA</button><br>
-                <input type="checkbox" class="contactinput" style="margin-right: -9vw; margin-left: -10vw; margin-top: 2vh;" required> Som si istý, že chcem danú akciu vykonať.
+                <button type="submit" name="action" value="password" id="contactsubmit" style="font-size:2vh; width: 20vw; height: 8vh;margin: 1vh;">' . t("ZMENIŤ POUŽÍVATEĽOVI HESLO") . '</button><br>
+                <button type="submit" name="action" value="normal" id="contactsubmit" style="font-size:2vh; width: 20vw; height: 8vh;margin: 1vh;">' . t("ZMENIŤ NA BEŽNÉHO POUŽÍVATEĽA") . '</button><br>
+                <button type="submit" name="action" value="partner" id="contactsubmit" style="font-size:2vh; width: 20vw; height: 8vh;margin: 1vh;">' . t("ZMENIŤ NA PARTNERA") . '</button><br>
+                <button type="submit" name="action" value="admin" id="contactsubmit" style="font-size:2vh; width: 20vw; height: 8vh;margin: 1vh;">' . t("ZMENIŤ NA ADMINISTRÁTORA") . '</button><br>
+                <button type="submit" name="action" value="delete" id="contactsubmit" style="font-size:2vh; width: 20vw; height: 8vh;margin: 1vh;">' . t("ZMAZAŤ POUŽÍVATEĽA") . '</button><br>
+                <input type="checkbox" class="contactinput" style="margin-right: -9vw; margin-left: -10vw; margin-top: 2vh;" required> ' . t("Som si istý, že chcem danú akciu vykonať.") . '
             </form>`;
                 });
               </script>';
@@ -154,9 +155,9 @@ if(isset($_POST['email'])) {
                 document.addEventListener("DOMContentLoaded", () => {
                     var adminsite = document.querySelector("#adminsite");
                     adminsite.innerHTML = `<form method="post" action="" style="text-align: center;">
-            <input type="email" name="email" placeholder="Email" class="contactinput" required><br>
-            <input type="submit" value="Vyhľadať" class="contactinput" style="margin-top: -1vh;">
-        </form><div style="font-size:2.5vh;text-align:center;color:red;"><b>Hľadaný email nie je v databáze.</b></div>`;
+            <input type="email" name="email" placeholder="' . t("Email") . '" class="contactinput" required><br>
+            <input type="submit" value="' . t("Vyhľadať") . '" class="contactinput" style="margin-top: -1vh;">
+        </form><div style="font-size:2.5vh;text-align:center;color:red;"><b>' . t("Hľadaný email nie je v databáze.") . '</b></div>`;
                 });
               </script>';
     }
@@ -164,38 +165,48 @@ if(isset($_POST['email'])) {
 
 if (isset($_POST['action'])) {
     $id = $_POST['id'];
-    if ($_POST['action'] == "normal") {
-        $sql_hotel = "UPDATE customers SET nationality = 'undefined' WHERE customers_id = '" . $id . "'";
+    if ($_POST['action'] == "password") {
+        $new_password = bin2hex(random_bytes(5));
+        $sql_hotel = "UPDATE customers SET password = '" . password_hash($new_password, PASSWORD_DEFAULT) . "' WHERE customers_id = '" . $id . "'";
         $conn->query($sql_hotel);
         echo "<script>
                 document.addEventListener('DOMContentLoaded', () => {
                     var adminsite = document.querySelector('#adminsite');
-                    adminsite.innerHTML = `<div style='font-size:2.5vh;text-align:center;color:green;padding-top:4vh;'><b>Používateľ bol zmenený na bežného používateľa.</b></div>`;
+                    adminsite.innerHTML = `<div style='font-size:2.5vh;text-align:center;color:green;padding-top:4vh;'><b>" . t("Používateľovo heslo bolo zmenené. Nezabudnite informovať používateľa o novom hesle. Nové heslo:") . " <span style='color: red; font-weight: 800;'>" . $new_password . "</span></b></div>`;
+                });
+              </script>";
+    } elseif ($_POST['action'] == "normal") {
+        $sql_action = "UPDATE customers SET nationality = 'undefined' WHERE customers_id = '" . $id . "'";
+        $conn->query($sql_action);
+        echo "<script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    var adminsite = document.querySelector('#adminsite');
+                    adminsite.innerHTML = `<div style='font-size:2.5vh;text-align:center;color:green;padding-top:4vh;'><b>" . t("Používateľ bol zmenený na bežného používateľa.") . "</b></div>`;
                 });
               </script>";
     } elseif ($_POST['action'] == "partner") {
         echo "<script>
                 document.addEventListener('DOMContentLoaded', () => {
                     var adminsite = document.querySelector('#adminsite');
-                    adminsite.innerHTML = `<div style='font-size:2.5vh;text-align:center;color:white;padding-top:4vh;'><form method='post' action='' style='text-align: center;'><input type='hidden' name='id' value='" . $id . "'><input type='number' name='hotel' placeholder='Id hotela' class='contactinput' required><br><input type='submit' value='Potvrdiť' class='contactinput' style='margin-top: -1vh;'></form></div>`;
+                    adminsite.innerHTML = `<div style='font-size:2.5vh;text-align:center;color:white;padding-top:4vh;'><form method='post' action='' style='text-align: center;'><input type='hidden' name='id' value='" . $id . "'><input type='number' name='hotel' placeholder='" . t("ID hotela") . "' class='contactinput' required><br><input type='submit' value='" . t("Potvrdiť") . "' class='contactinput' style='margin-top: -1vh;'></form></div>`;
                 });
               </script>";
     } elseif ($_POST['action'] == "admin") {
-        $sql_hotel = "UPDATE customers SET nationality = 'admin' WHERE customers_id = '" . $id . "'";
-        $conn->query($sql_hotel);
+        $sql_action = "UPDATE customers SET nationality = 'admin' WHERE customers_id = '" . $id . "'";
+        $conn->query($sql_action);
         echo "<script>
                 document.addEventListener('DOMContentLoaded', () => {
                     var adminsite = document.querySelector('#adminsite');
-                    adminsite.innerHTML = `<div style='font-size:2.5vh;text-align:center;color:green;padding-top:4vh;'><b>Používateľ bol zmenený na administrátora.</b></div>`;
+                    adminsite.innerHTML = `<div style='font-size:2.5vh;text-align:center;color:green;padding-top:4vh;'><b>" . t("Používateľ bol zmenený na administrátora.") . "</b></div>`;
                 });
               </script>";
     } elseif ($_POST['action'] == "delete") {
-        $sql_hotel = "DELETE FROM customers WHERE customers_id = '" . $id . "'";
-        $conn->query($sql_hotel);
+        $sql_action = "DELETE FROM customers WHERE customers_id = '" . $id . "'";
+        $conn->query($sql_action);
         echo "<script>
                 document.addEventListener('DOMContentLoaded', () => {
                     var adminsite = document.querySelector('#adminsite');
-                    adminsite.innerHTML = `<div style='font-size:2.5vh;text-align:center;color:green;padding-top:4vh;'><b>Používateľ bol úspešne odstránený.</b></div>`;
+                    adminsite.innerHTML = `<div style='font-size:2.5vh;text-align:center;color:green;padding-top:4vh;'><b>" . t("Používateľ bol úspešne odstránený.") . "</b></div>`;
                 });
               </script>";
     }
@@ -210,16 +221,16 @@ if (isset($_POST['hotel'])) {
     echo "<script>
                 document.addEventListener('DOMContentLoaded', () => {
                     var adminsite = document.querySelector('#adminsite');
-                    adminsite.innerHTML = `<div style='font-size:2.5vh;text-align:center;color:green;padding-top:4vh;'><b>Používateľ bol zmenený na partnera.</b></div>`;
+                    adminsite.innerHTML = `<div style='font-size:2.5vh;text-align:center;color:green;padding-top:4vh;'><b>" . t("Používateľ bol zmenený na partnera.") . "</b></div>`;
                 });
               </script>";
 }
 ?>
 <!DOCTYPE html>
-<html lang="sk"> <!-- after translation edit -->
+<html lang="<?php echo $lang; ?>">
     <head>
         <meta charset="UTF-8">
-        <title>Admin | accomio | Hotely, penzióny a omnoho viac</title>
+        <title>Admin | <?php echo t("accomio | Hotely, penzióny a omnoho viac");?></title>
         <link rel="icon" type="image/x-icon" href="styles/icons/icon.ico">
         <link rel='stylesheet' href='styles/basic.css'>
         <link rel='stylesheet' href='styles/user.css'>
@@ -273,8 +284,8 @@ if (isset($_POST['hotel'])) {
         </header>
 
         <form method="get" class="navbar">
-            <button class="navbtn" type="submit" name="site" value="com" <?php if($site === "com") {echo "style='background-color:#27f695;'";} ?>>Komunikácia</button>
-            <button class="navbtn" type="submit" name="site" value="use" <?php if($site === "use") {echo "style='background-color:#27f695;'";} ?>>Použivatelia</button>
+            <button class="navbtn" type="submit" name="site" value="com" <?php if($site === "com") {echo "style='background-color:#27f695;'";} ?>><?php echo t("Komunikácia");?></button>
+            <button class="navbtn" type="submit" name="site" value="use" <?php if($site === "use") {echo "style='background-color:#27f695;'";} ?>><?php echo t("Použivatelia");?></button>
         </form>
 
         <div id="adminsite"></div>
